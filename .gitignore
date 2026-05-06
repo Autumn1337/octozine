@@ -5,3 +5,6 @@ dist/
 .env.*
 *.log
 .DS_Store
+tmp-e2e/
+web/.astro/
+web/dist/
