@@ -1,0 +1,35 @@
+---
+interface SummarizedItem {
+  owner: string;
+  repo: string;
+  description: string;
+  stars: number;
+  starsDelta?: number;
+  sources: string[];
+  url: string;
+  summary: { zh: string; en: string };
+  reason: string;
+}
+interface Props {
+  item: SummarizedItem;
+  languages: string[];
+}
+const { item, languages } = Astro.props;
+const showZh = languages.includes("zh");
+const showEn = languages.includes("en");
+const sourcesLabel = item.sources.join(" · ");
+---
+<section class="hero">
+  <div class="tag">本周特别推荐 · Featured</div>
+  <h1 class="hero-title">
+    <a href={item.url}>{item.repo}</a>
+  </h1>
+  <p class="hero-sub">{item.description || `${item.owner}/${item.repo}`}</p>
+  {showZh && <p class="hero-body">{item.summary.zh}</p>}
+  {showEn && <p class="hero-body">{item.summary.en}</p>}
+  <div class="hero-meta">
+    <span>★ {item.stars.toLocaleString()}</span>
+    {item.starsDelta !== undefined && <span class="meta-up">+{item.starsDelta} this period</span>}
+    <span class="meta-sources">via {sourcesLabel}</span>
+  </div>
+</section>

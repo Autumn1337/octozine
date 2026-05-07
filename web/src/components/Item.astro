@@ -1,0 +1,44 @@
+---
+interface SummarizedItem {
+  owner: string;
+  repo: string;
+  description: string;
+  stars: number;
+  starsDelta?: number;
+  language?: string;
+  topics: string[];
+  sources: string[];
+  url: string;
+  summary: { zh: string; en: string };
+  reason: string;
+}
+interface Props {
+  item: SummarizedItem;
+  num: number;
+  languages: string[];
+}
+const { item, num, languages } = Astro.props;
+const showZh = languages.includes("zh");
+const showEn = languages.includes("en");
+const numStr = String(num).padStart(2, "0");
+const stats = `★ ${item.stars.toLocaleString()}${item.starsDelta !== undefined ? ` · ↑ ${item.starsDelta}` : ""}`;
+const metaParts = [
+  ...(item.language ? [item.language.toLowerCase()] : []),
+  ...item.topics.slice(0, 2),
+  `via ${item.sources.join(" · ")}`,
+];
+---
+<article class="item">
+  <div class="item-num">{numStr}</div>
+  <div class="item-body">
+    <h3 class="item-title">
+      <a href={item.url}>{item.owner} / {item.repo}</a>
+      <small>{stats}</small>
+    </h3>
+    {showZh && <p class="item-sum zh">{item.summary.zh}</p>}
+    {showEn && <p class="item-sum en">{item.summary.en}</p>}
+    <div class="item-meta">
+      {metaParts.map((p, i) => <Fragment>{i > 0 && <span class="dot">·</span>}<span>{p}</span></Fragment>)}
+    </div>
+  </div>
+</article>

@@ -1,0 +1,21 @@
+---
+interface Props {
+  slug: string;
+  languages: string[];
+}
+const { slug, languages } = Astro.props;
+const langLabel = languages.map(l => l === "zh" ? "中" : l.toUpperCase()).join(" / ");
+---
+<header class="header">
+  <div class="brand">
+    <div class="mark">o</div>
+    <div>
+      <div class="brand-name">Octozine</div>
+      <div class="brand-meta">{slug.replace("-W", " · Week ")} · {langLabel}</div>
+    </div>
+  </div>
+  <nav class="nav">
+    <a href="/">Latest</a>
+    <a href="/archive/">Archive</a>
+  </nav>
+</header>
