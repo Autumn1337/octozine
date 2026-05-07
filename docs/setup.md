@@ -117,17 +117,28 @@ Always-on. The site exposes `/feed.xml` (Atom) and links to it via `<link rel="a
 
 Push runs as a separate workflow step **after** the site has deployed, so a push misconfiguration never blocks publication. The step turns red in the Actions UI when push fails so you notice; the issue still lands on Pages.
 
-## Optional: `GH_TOKEN` secret
+## Strongly recommended: `GH_TOKEN` secret
 
-The `hn` and `events` sources call the GitHub REST API. Without auth you have a 60 req/h budget per IP; with a token, 5000 req/h.
+octozine calls the GitHub REST API from multiple places: profile generation
+(owned repos / starred / public events / readme excerpts), the `hn` source's
+per-repo enrichment, the `search` source, and optionally the `events` source.
+A single run uses ~30 GitHub API requests.
 
-1. Create a fine-grained PAT at https://github.com/settings/tokens
-   - For `hn` enrichment: no scopes needed (`public_repo` read is automatic).
-   - For `events`: also grant `read:user` (lets the workflow read your `following` list).
-2. Add a repo secret named `GH_TOKEN` with the token value.
-3. The workflow already passes it through; nothing else to change.
+Without auth, GitHub limits anonymous API to **60 req/h per IP** — meaning
+two runs back-to-back will start hitting `403 rate limit exceeded` and your
+fetchers will silently return zero candidates. With `GH_TOKEN`, the limit
+jumps to **5000 req/h**, effectively unlimited for octozine's usage.
 
-If you don't enable `events` and don't hit rate limits on `hn`, you can skip this entirely.
+1. Create a token at https://github.com/settings/tokens → **Tokens (classic)** → **Generate new token (classic)**:
+   - **Note**: `octozine`
+   - **Expiration**: 90 days or "No expiration"
+   - **Scopes**: leave everything unchecked (`public_repo` read is automatic)
+   - For the `events` source specifically, additionally grant `read:user` (lets the workflow read your `following` list).
+2. Copy the `ghp_...` string immediately (you can't see it again).
+3. Add a repo secret named `GH_TOKEN` with the token value.
+
+The workflow already passes `GH_TOKEN` through to the pipeline; nothing else
+to change. The token is only used to read public information.
 
 ## Troubleshooting
 

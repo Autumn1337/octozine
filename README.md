@@ -95,7 +95,12 @@ llm:
 - **Name**: `LLM_API_KEY`
 - **Secret**: 粘贴你的 LLM API key
 
-如果你想提高 GitHub API rate limit,可以额外加 `GH_TOKEN` secret。
+**⚠️ 强烈建议同时加一个 `GH_TOKEN` secret**(任意 GitHub Personal Access Token,不需要任何特殊 scope):
+
+- 不加:GitHub API 匿名速率限制 **60 req/h**,octozine 一次跑用 ~30 个,连续两次就撞墙挂掉
+- 加了:**5000 req/h**,几乎不用关心
+
+拿 token:[github.com/settings/tokens](https://github.com/settings/tokens) → Tokens (classic) → Generate new token → scopes 不勾任何 → 复制 `ghp_...` → 同位置加 secret 名字 `GH_TOKEN`。
 
 ### 4. 启用 GitHub Pages
 
@@ -204,7 +209,22 @@ llm:
 | `ollama` | `llama3.1` | 本地 | - |
 | `custom` | - | 任何 OpenAI 兼容 endpoint | 自填 `base_url` + `model` |
 
-DeepSeek 是默认推荐,便宜、速度够用。每期常态下约 6 次 LLM 调用(rank + 5 summarize),首次或重建画像时额外 2 次(profile extract + critic)。按周运行成本很低。
+DeepSeek 是默认推荐,便宜、速度够用。每期常态下约 6 次 LLM 调用(rank + 5 summarize),首次或重建画像时额外 2 次(profile extract + critic)。
+
+### 真实成本预估(按周跑)
+
+| Provider · model | 首次跑(8 调用) | 月度估算(4 期) | 备注 |
+|---|---|---|---|
+| **DeepSeek `v4-flash`**(默认) | ≈ ¥0.05 | ≈ ¥0.2 | 性价比首选 |
+| **DeepSeek `v4-pro`** | ≈ ¥0.6(实测 18 分钟) | ≈ ¥2 | 质量更高但慢 5-10× |
+| **OpenAI `gpt-5.4-mini`** | ≈ $0.05 | ≈ $0.2 | |
+| **Qwen `qwen-plus`** | ≈ ¥0.05 | ≈ ¥0.2 | |
+| **Zhipu `glm-4.5-air`** | ≈ ¥0.05 | ≈ ¥0.2 | |
+| **Groq `llama-3.1-8b-instant`** | 免费档位通常够 | ≈ $0 | 推理极快 |
+| **Ollama** 本地 | $0 | $0 | 需要本地 GPU,JSON mode 部分兼容 |
+| Moonshot 128k context | 偏贵,以官方定价为准 | — | 128k 上下文 model 单价高 |
+
+**`v4-flash` 一年成本 < ¥3,按周自动跑成本可忽略。** 想把 `pro` / `gpt-5.5` 这种高端 model 当 default,看实测一年也就 ¥20-30,但首次跑会慢到 15-20 分钟。
 
 ---
 

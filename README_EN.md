@@ -95,7 +95,12 @@ In your fork, open:
 - **Name**: `LLM_API_KEY`
 - **Secret**: paste your LLM API key
 
-Optionally add a `GH_TOKEN` secret to raise the GitHub API rate limit.
+**⚠️ Strongly recommended: add a `GH_TOKEN` secret too** (any GitHub Personal Access Token, no scopes required):
+
+- Without it: GitHub anonymous API limit is **60 req/h**, and one octozine run uses ~30. Two runs back-to-back will hit the wall.
+- With it: **5000 req/h**, effectively unlimited.
+
+Grab a token: [github.com/settings/tokens](https://github.com/settings/tokens) → Tokens (classic) → Generate new token → leave all scopes unchecked → copy the `ghp_...` string → add it the same way with name `GH_TOKEN`.
 
 ### 4. Enable GitHub Pages
 
@@ -204,7 +209,22 @@ llm:
 | `ollama` | `llama3.1` | local | - |
 | `custom` | - | any OpenAI-compatible endpoint | set `base_url` + `model` |
 
-DeepSeek is the recommended default: cheap, fast enough, and good for summaries. A steady-state issue takes about 6 LLM calls (rank + 5 summarize); first runs or profile rebuilds add 2 more (profile extract + critic). Weekly runs are inexpensive.
+DeepSeek is the recommended default: cheap, fast enough, and good for summaries. A steady-state issue takes about 6 LLM calls (rank + 5 summarize); first runs or profile rebuilds add 2 more (profile extract + critic).
+
+### Real-world cost estimate (weekly cron)
+
+| Provider · model | First run (8 calls) | Monthly (4 issues) | Notes |
+|---|---|---|---|
+| **DeepSeek `v4-flash`** (default) | ≈ ¥0.05 (~$0.007) | ≈ ¥0.2 (~$0.03) | Best price/quality |
+| **DeepSeek `v4-pro`** | ≈ ¥0.6 (measured, 18 min) | ≈ ¥2 (~$0.30) | Higher quality, 5-10× slower |
+| **OpenAI `gpt-5.4-mini`** | ≈ $0.05 | ≈ $0.20 | |
+| **Qwen `qwen-plus`** | ≈ ¥0.05 | ≈ ¥0.2 | |
+| **Zhipu `glm-4.5-air`** | ≈ ¥0.05 | ≈ ¥0.2 | |
+| **Groq `llama-3.1-8b-instant`** | free tier usually enough | ≈ $0 | Very fast inference |
+| **Ollama** (local) | $0 | $0 | Local GPU; JSON mode partially supported |
+| Moonshot 128k context | priced per official rates | — | 128k-context models cost more per token |
+
+**With `v4-flash` you stay under ¥3 (~$0.40) per year.** Even running a premium model like `v4-pro` or `gpt-5.5` as default lands you around ¥20-30 / $3-4 per year, though first runs take 15-20 minutes.
 
 ---
 
