@@ -17,13 +17,13 @@ llm:
 
   # Optional — override the provider's default model.
   # Leave commented to use the registered default (see README provider table).
-  # Examples by provider:
-  #   openai   → gpt-4o, gpt-4o-mini, gpt-5
-  #   deepseek → deepseek-v4-flash (default), deepseek-v4-pro
-  #   moonshot → moonshot-v1-8k, moonshot-v1-32k, moonshot-v1-128k (default)
-  #   qwen     → qwen-plus (default), qwen-max, qwen-turbo
-  #   zhipu    → glm-4.5 (default), glm-4-plus, glm-4-air
-  #   groq     → llama-3.1-8b-instant (default), llama-3.3-70b-versatile
+  # Each provider's official model list (verified 2026-05):
+  #   openai   → https://platform.openai.com/docs/models                                        default: gpt-5.4-mini
+  #   deepseek → https://api-docs.deepseek.com/quick_start/pricing                              default: deepseek-v4-flash
+  #   moonshot → https://platform.kimi.com/docs/api/chat                                        default: moonshot-v1-128k
+  #   qwen     → https://help.aliyun.com/zh/model-studio/getting-started/models                 default: qwen-plus
+  #   zhipu    → https://docs.bigmodel.cn/cn/guide/models/text/glm-4.7                          default: glm-4.5-air
+  #   groq     → https://console.groq.com/docs/models                                           default: llama-3.1-8b-instant
   # model: deepseek-v4-pro
 
   # base_url is also overridable (only needed for `provider: custom` or self-hosted gateways):

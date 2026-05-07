@@ -140,20 +140,20 @@ llm:
   # model: deepseek-v4-pro          # ← 可选。不写就用默认 model
 ```
 
-每家都有"默认 model"和"可选 model"两类。默认是性价比挡位;想要更强/更便宜可以 override:
+下表的默认 model 是 octozine 内置的;同家替代 model 写在 `model:` 字段就生效。各家 model 命名变化很快——现在的当前列表点 docs 链接(全部 2026-05 验证过):
 
-| `provider:` | 默认模型 | 同家可选(写在 `model:` 字段) |
-|---|---|---|
-| `openai` | `gpt-4o-mini` | `gpt-4o`, `gpt-5` |
-| `deepseek` | `deepseek-v4-flash` | `deepseek-v4-pro` |
-| `moonshot` | `moonshot-v1-128k` | `moonshot-v1-8k`, `moonshot-v1-32k` |
-| `qwen` | `qwen-plus` | `qwen-max`, `qwen-turbo` |
-| `zhipu` | `glm-4.5` | `glm-4-plus`, `glm-4-air` |
-| `groq` | `llama-3.1-8b-instant` | `llama-3.3-70b-versatile` |
-| `ollama` | `llama3.1` | 任意你本地拉过的 model |
-| `custom` | — | 必填 `base_url` + `model` |
+| `provider:` | 默认模型 | 几个常见替代 | 当前 model 列表 |
+|---|---|---|---|
+| `openai` | `gpt-5.4-mini` | `gpt-5.4`, `gpt-5.5`, `gpt-4.1-mini` | [docs](https://platform.openai.com/docs/models) |
+| `deepseek` | `deepseek-v4-flash` | `deepseek-v4-pro` | [docs](https://api-docs.deepseek.com/quick_start/pricing) |
+| `moonshot` | `moonshot-v1-128k` | `moonshot-v1-32k`, `kimi-k2-thinking` | [docs](https://platform.kimi.com/docs/api/chat) |
+| `qwen` | `qwen-plus` | `qwen-max`, `qwen3.6-plus`, `qwen3.6-flash` | [docs](https://help.aliyun.com/zh/model-studio/getting-started/models) |
+| `zhipu` | `glm-4.5-air` | `glm-4.5-flash`(免费), `glm-4.7` | [docs](https://docs.bigmodel.cn/cn/guide/models/text/glm-4.7) |
+| `groq` | `llama-3.1-8b-instant` | `llama-3.3-70b-versatile`, `openai/gpt-oss-20b` | [docs](https://console.groq.com/docs/models) |
+| `ollama` | `llama3.1` | 任意你本地 `ollama pull` 过的 model | — |
+| `custom` | — | 必填 `base_url` + `model` | — |
 
-具体的 model 列表以各家文档为准——它们更新很快,这张表只列默认 + 几个常见替代。摘要质量对 model 不敏感,默认这档已经够用;要更精确的精排原因 / 更长的双语摘要,可以试更大的 model(成本会涨,但仍是毛分钱量级)。
+摘要质量对 model 不敏感——默认这档(基本都是各家最便宜的"flash / mini"挡)对 octozine 的 rank + summarize 任务已经够用。要更精确的精排原因 / 更长的双语摘要,可以试更大的 model,成本仍在毛分钱量级。
 
 不在表里的 provider(xAI / Together / 自部署 vLLM 等):
 ```yaml

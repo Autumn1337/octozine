@@ -72,7 +72,7 @@ history_window: 4
   it("provider name resolves to baseUrl + model", () => {
     const cfg = parseConfig(base + "llm:\n  provider: openai\n");
     expect(cfg.llm.baseUrl).toBe("https://api.openai.com/v1");
-    expect(cfg.llm.model).toBe("gpt-4o-mini");
+    expect(cfg.llm.model).toBe("gpt-5.4-mini");
   });
 
   it("provider + model override", () => {

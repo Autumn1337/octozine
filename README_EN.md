@@ -141,20 +141,20 @@ llm:
   # model: deepseek-v4-pro          # ← optional. Leave commented to use the default
 ```
 
-Every provider ships with a default model (good price/quality balance) plus a list of alternatives you can swap in via the `model:` field:
+The "default model" column lists what octozine ships with; alternatives can be swapped in via the `model:` field. Provider model lists evolve fast — for the current set click the docs link (all verified 2026-05):
 
-| `provider:` | Default model | Same-provider alternatives (write in `model:`) |
-|---|---|---|
-| `openai` | `gpt-4o-mini` | `gpt-4o`, `gpt-5` |
-| `deepseek` | `deepseek-v4-flash` | `deepseek-v4-pro` |
-| `moonshot` | `moonshot-v1-128k` | `moonshot-v1-8k`, `moonshot-v1-32k` |
-| `qwen` | `qwen-plus` | `qwen-max`, `qwen-turbo` |
-| `zhipu` | `glm-4.5` | `glm-4-plus`, `glm-4-air` |
-| `groq` | `llama-3.1-8b-instant` | `llama-3.3-70b-versatile` |
-| `ollama` | `llama3.1` | any model you've pulled locally |
-| `custom` | — | requires `base_url` + `model` |
+| `provider:` | Default model | Common alternatives | Current model list |
+|---|---|---|---|
+| `openai` | `gpt-5.4-mini` | `gpt-5.4`, `gpt-5.5`, `gpt-4.1-mini` | [docs](https://platform.openai.com/docs/models) |
+| `deepseek` | `deepseek-v4-flash` | `deepseek-v4-pro` | [docs](https://api-docs.deepseek.com/quick_start/pricing) |
+| `moonshot` | `moonshot-v1-128k` | `moonshot-v1-32k`, `kimi-k2-thinking` | [docs](https://platform.kimi.com/docs/api/chat) |
+| `qwen` | `qwen-plus` | `qwen-max`, `qwen3.6-plus`, `qwen3.6-flash` | [docs](https://help.aliyun.com/zh/model-studio/getting-started/models) |
+| `zhipu` | `glm-4.5-air` | `glm-4.5-flash` (free), `glm-4.7` | [docs](https://docs.bigmodel.cn/cn/guide/models/text/glm-4.7) |
+| `groq` | `llama-3.1-8b-instant` | `llama-3.3-70b-versatile`, `openai/gpt-oss-20b` | [docs](https://console.groq.com/docs/models) |
+| `ollama` | `llama3.1` | any model you've `ollama pull`-ed locally | — |
+| `custom` | — | requires `base_url` + `model` | — |
 
-Specific model availability evolves fast — the table only lists defaults plus a few common alternatives. Summary quality is not very model-sensitive; the defaults are good enough for most users. For higher-quality rank reasons or longer bilingual summaries, try the bigger models (cost goes up but still in the cents/issue range).
+Summary quality is not very model-sensitive — every default above is a "flash / mini" tier and is good enough for octozine's rank + summarize workload. For higher-quality rank reasons or longer bilingual summaries, try the bigger models — cost stays in the cents-per-issue range.
 
 For providers not in the table (xAI, Together, self-hosted vLLM, …):
 ```yaml

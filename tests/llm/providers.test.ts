@@ -31,7 +31,7 @@ describe("resolveLlmConfig", () => {
   it("user baseUrl overrides provider default", () => {
     const r = resolveLlmConfig({ provider: "openai" as ProviderName, baseUrl: "https://my-proxy.example/v1" });
     expect(r.baseUrl).toBe("https://my-proxy.example/v1");
-    expect(r.model).toBe("gpt-4o-mini");
+    expect(r.model).toBe(PROVIDERS.openai.model);
   });
 
   it("custom requires explicit baseUrl and model", () => {
