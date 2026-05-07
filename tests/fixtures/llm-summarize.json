@@ -1,0 +1,4 @@
+{
+  "zh": "用 Rust 写的终端 UI 库，被 gitui、atuin、helix 等新一代终端应用作为基础。",
+  "en": "A Rust library for building rich terminal UIs. It powers a growing wave of TUI tools including gitui, atuin, and helix."
+}
