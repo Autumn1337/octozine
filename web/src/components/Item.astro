@@ -37,6 +37,7 @@ const metaParts = [
     </h3>
     {showZh && <p class="item-sum zh">{item.summary.zh}</p>}
     {showEn && <p class="item-sum en">{item.summary.en}</p>}
+    {item.reason && <p class="item-reason">— {item.reason}</p>}
     <div class="item-meta">
       {metaParts.map((p, i) => <Fragment>{i > 0 && <span class="dot">·</span>}<span>{p}</span></Fragment>)}
     </div>

@@ -38,7 +38,7 @@ export async function rankCandidates(
     items.map(it => JSON.stringify(it)).join("\n"),
   ].join("\n");
 
-  const text = await chat({
+  const callChat = (): Promise<string> => chat({
     baseUrl: llm.baseUrl,
     apiKey: llm.apiKey,
     model: llm.model,
@@ -49,6 +49,13 @@ export async function rankCandidates(
     temperature: 0.2,
     responseFormat: "json",
   });
+  // Single retry per spec §12: "LLM rank 失败 → 重试 1 次；仍失败 abort".
+  let text: string;
+  try {
+    text = await callChat();
+  } catch {
+    text = await callChat();
+  }
 
   const parsed = JSON.parse(text) as { ranking: Array<{ i: number; score: number; reason: string }> };
   if (!Array.isArray(parsed.ranking)) {
