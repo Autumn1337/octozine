@@ -118,7 +118,8 @@ export async function generateProfile(
   let raw: string;
   try {
     raw = await callOnce();
-  } catch {
+  } catch (e) {
+    console.warn(`[profile] first attempt failed, retrying:`, (e as Error).message);
     raw = await callOnce();
   }
 
@@ -148,8 +149,11 @@ export function serializeProfileYaml(p: Profile, meta: SerializeMeta): string {
   return `# generated ${meta.generatedAt} from ${meta.username}'s starred repos\n# edit freely; this file is read each run.\n${body}`;
 }
 
+// YAML 1.1 accepts `True` / `TRUE` as boolean true; tolerate either case so
+// flipping the regenerate flag doesn't silently no-op (which would force
+// re-generation every run, burning LLM tokens until the user notices).
 export function flipRegenerateToFalse(configText: string): string {
-  return configText.replace(/(\bregenerate:\s*)true\b/, "$1false");
+  return configText.replace(/(\bregenerate:\s*)[Tt][Rr][Uu][Ee]\b/, "$1false");
 }
 
 export type EnsureProfileOpts = {
@@ -197,6 +201,12 @@ export async function ensureProfile(opts: EnsureProfileOpts): Promise<Profile> {
     if (flipped !== cfgText) {
       await writeFile(configPath, flipped, "utf8");
       console.log(`[profile] flipped config.profile.regenerate → false`);
+    } else {
+      console.warn(
+        `[profile] could not flip config.profile.regenerate to false ` +
+        `(unrecognized YAML formatting). Please edit config/config.yaml manually ` +
+        `to avoid re-generating the profile on every run.`,
+      );
     }
   }
   return profile;

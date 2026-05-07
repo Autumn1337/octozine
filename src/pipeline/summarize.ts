@@ -60,6 +60,9 @@ async function summarizeOneWithRetry(c: RankedCandidate, llm: SummarizeLLMOpts):
   try {
     return await summarizeOne(c, llm);
   } catch (e) {
-    return await summarizeOne(c, llm);  // single retry, then bubble
+    // Surface the first attempt's reason — losing it makes debugging
+    // GitHub Actions log output much harder.
+    console.warn(`[summarize] ${c.owner}/${c.repo} first attempt failed, retrying:`, (e as Error).message);
+    return await summarizeOne(c, llm);
   }
 }
