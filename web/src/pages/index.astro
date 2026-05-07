@@ -4,6 +4,7 @@ import Header from "../components/Header.astro";
 import Hero from "../components/Hero.astro";
 import Item from "../components/Item.astro";
 import { loadLatest } from "../lib/issues.js";
+import { url } from "../lib/url.js";
 
 const issue = await loadLatest();
 ---
@@ -12,6 +13,7 @@ const issue = await loadLatest();
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{issue ? `Octozine · ${issue.slug}` : "Octozine"}</title>
+  <link rel="alternate" type="application/atom+xml" title="Octozine" href={url("feed.xml")} />
 </head>
 <body>
   <main class="page">
