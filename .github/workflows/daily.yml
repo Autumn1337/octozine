@@ -1,0 +1,87 @@
+name: Octozine Daily
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"          # weekly Monday 09:00 UTC; change via `npm run sync-cron`
+  workflow_dispatch:
+
+permissions:
+  contents: write                # commit data/ back
+  pages: write                   # deploy to GitHub Pages
+  id-token: write                # required by deploy-pages
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # need history so commit-back rebases cleanly
+
+      - name: Verify LLM_API_KEY
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: |
+          if [ -z "$LLM_API_KEY" ]; then
+            echo "::error::LLM_API_KEY secret is not set. Add it under repo Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            web/package-lock.json
+
+      - name: Install root deps
+        run: npm ci
+
+      - name: Run pipeline
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: npm run pipeline
+
+      - name: Install web deps
+        working-directory: web
+        run: npm ci
+
+      - name: Build site
+        working-directory: web
+        run: npm run build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./web/dist
+
+      - name: Deploy to Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Commit new issue data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data/; then
+            echo "no data/ changes to commit"
+            exit 0
+          fi
+          git add data/
+          slug=$(git diff --staged --name-only -- data/issues/ | grep -oE '[0-9]{4}-W[0-9]{2}' | head -1)
+          slug=${slug:-untitled}
+          git commit -m "data: issue ${slug} [skip ci]"
+          git push
