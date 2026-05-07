@@ -51,26 +51,64 @@ Your interest profile is inferred by the LLM from your starred repos — **every
 
 ## 5 minutes to first issue
 
-**Prerequisites**: a GitHub account + an OpenAI-compatible LLM key (see [provider table](#switch-llm-provider) below).
+> **Before you start**: grab an LLM API key from [DeepSeek](https://platform.deepseek.com) (or [any other provider](#switch-llm-provider))—it'll be a string like `sk-...` that you'll paste in Step 3.
 
-1. **Fork** → [github.com/Autumn1337/octozine/fork](https://github.com/Autumn1337/octozine/fork)
-2. **Edit two lines in `config/config.yaml`**:
-   ```yaml
-   github_username: <your GitHub username>
-   llm:
-     provider: deepseek          # ← whichever provider you got a key for
-   ```
-3. **Add a secret**: Settings → Secrets and variables → Actions → New repository secret
-   - Name: `LLM_API_KEY`, Value: your key
-4. **Enable Pages**: Settings → Pages → Source: **GitHub Actions**
-5. **Run it**: Actions → **Octozine Daily** → Run workflow
+All 5 steps below are done **on the GitHub web UI**—no git clone needed.
 
-In ~3 minutes:
-- ✅ Action finishes green; commits `data/issues/<slug>.json` + auto-generated `profile.yaml` to main
-- 🌐 Site is live at `https://<your-username>.github.io/<repo>/`
-- 📅 Workflow then runs every Monday 09:00 UTC (change schedule in [setup.md](./docs/setup.md))
+### Step 1 · Fork
 
-If something failed, see [Troubleshooting](#troubleshooting) below; full guide in [docs/setup.md](./docs/setup.md).
+Click [👉 Fork this repo 👈](https://github.com/Autumn1337/octozine/fork). After forking, you'll have `https://github.com/<you>/octozine`. **Every step below happens inside your fork.**
+
+### Step 2 · Edit two lines in `config/config.yaml`
+
+In your fork, open `config/config.yaml`, click the ✏️ pencil icon (top-right of the file view) to edit, and change these two values:
+
+```yaml
+github_username: <your GitHub username>      # ← used to infer your taste from your starred repos
+llm:
+  provider: deepseek                          # ← whichever provider you got a key for (deepseek / openai / qwen / ...)
+```
+
+Scroll down → **Commit changes** directly to main.
+
+### Step 3 · Add the LLM key as a repo secret
+
+Go to your fork's **Settings → Secrets and variables → Actions → New repository secret**:
+
+- **Name**: `LLM_API_KEY` (must be this exact name)
+- **Secret**: paste the key from Step 0
+- Click **Add secret**
+
+### Step 4 · Enable GitHub Pages
+
+Go to **Settings → Pages**:
+
+- **Source**: select **GitHub Actions** from the dropdown
+- ⚠️ Do NOT pick "Deploy from a branch"—this is the most common gotcha; choosing wrong leaves your site 404'ing
+
+No need to pick a branch—the workflow uploads its own artifact.
+
+### Step 5 · Trigger the first run
+
+Go to the **Actions** tab → pick **Octozine Daily** in the left sidebar → click the blue **Run workflow** button (top-right) → click **Run workflow** again to confirm.
+
+---
+
+### 🎉 What success looks like
+
+In 3-4 minutes, the Action finishes and **a new commit lands on your main branch**:
+
+```
+data: issue 2026-WXX [skip ci]
+   - data/issues/<slug>.json   this week's generated content
+   - config/profile.yaml       LLM-inferred profile from your starred repos
+```
+
+Then **your site is live at** `https://<your-username>.github.io/<repo-name>/`.
+
+After this, the workflow runs every Monday at 09:00 UTC (change frequency/timezone in [docs/setup.md](./docs/setup.md)).
+
+**Action failed?** → See the 4 highest-frequency fixes in [Troubleshooting](#troubleshooting) below, or the full [docs/setup.md](./docs/setup.md).
 
 ---
 

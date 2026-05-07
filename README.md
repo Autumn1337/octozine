@@ -51,26 +51,64 @@
 
 ## 5 分钟跑起来
 
-**先决条件**: 一个 GitHub 账号 + 一家 OpenAI 兼容协议的 LLM key(见下方 [provider 表](#切换-llm-provider))。
+> **开始前**:去 [DeepSeek](https://platform.deepseek.com)(或 [其他任意一家](#切换-llm-provider))注册并拿一个 LLM API key——会是一个 `sk-...` 之类的字符串,后面 Step 3 要用。
 
-1. **Fork** → [github.com/Autumn1337/octozine/fork](https://github.com/Autumn1337/octozine/fork)
-2. **改 `config/config.yaml` 两行**:
-   ```yaml
-   github_username: <你的 GitHub username>
-   llm:
-     provider: deepseek          # ← 改成你拿了 key 的那家
-   ```
-3. **加 secret**:Settings → Secrets and variables → Actions → New repository secret
-   - Name: `LLM_API_KEY`,Value: 你的 key
-4. **启用 Pages**:Settings → Pages → Source: **GitHub Actions**
-5. **跑**:Actions → **Octozine Daily** → Run workflow
+下面 5 步**全部在 GitHub 网页上完成**,不需要 git clone 到本地。
 
-约 3 分钟后:
-- ✅ Action 跑通,自动 commit `data/issues/<slug>.json` + 自动生成的 `profile.yaml` 回 main
-- 🌐 站点 live 在 `https://<你的 username>.github.io/<repo>/`
-- 📅 之后每周一 09:00 UTC 自动跑(改频率见 [setup.md](./docs/setup.md))
+### Step 1 · Fork
 
-挂了见下方[常见问题](#常见问题),完整指南在 [docs/setup.md](./docs/setup.md)。
+点 [👉 Fork this repo 👈](https://github.com/Autumn1337/octozine/fork)。Fork 完成后你会得到 `https://github.com/<你>/octozine`,**之后所有 Step 都在你这个 fork 里操作**。
+
+### Step 2 · 改 `config/config.yaml` 这两行
+
+在你 fork 的页面点开 `config/config.yaml`,右上角的 ✏️ 铅笔图标进入编辑,改这两个值:
+
+```yaml
+github_username: <你的 GitHub username>     # ← 改成你的(决定从谁的 starred 推断画像)
+llm:
+  provider: deepseek                         # ← 改成你拿了 key 的那家(deepseek / openai / qwen / ...)
+```
+
+页面底部 **Commit changes** 直接 commit 到 main 即可。
+
+### Step 3 · 把 LLM key 加到 secrets
+
+去你 fork 的 **Settings → Secrets and variables → Actions → New repository secret**:
+
+- **Name**: `LLM_API_KEY`(必须是这个名字)
+- **Secret**: 粘贴你 Step 0 拿到的 key
+- 点 **Add secret**
+
+### Step 4 · 启用 GitHub Pages
+
+去 **Settings → Pages**:
+
+- **Source**: 下拉选 **GitHub Actions**
+- ⚠️ 别选成 "Deploy from a branch"——这是新手最容易踩的坑,选错站点会 404
+
+不用挑 branch,workflow 会自己上传 artifact。
+
+### Step 5 · 跑一次
+
+去 **Actions** tab → 左侧选 **Octozine Daily** → 右上角点 **Run workflow** 蓝色按钮 → 弹出来再点一次 **Run workflow** 确认。
+
+---
+
+### 🎉 完成后你会看到
+
+3-4 分钟内,Action 跑完,**你的 main 分支上多 1 个 commit**:
+
+```
+data: issue 2026-WXX [skip ci]
+   - data/issues/<slug>.json   本周生成的内容
+   - config/profile.yaml       LLM 从你 starred 推断的画像
+```
+
+然后 **你的站点 live 在** `https://<你的 username>.github.io/<repo 名>/`。
+
+之后每周一 09:00 UTC 自动跑一次(改频率/时区见 [docs/setup.md](./docs/setup.md))。
+
+**Action 挂了?** → 翻下方 [常见问题](#常见问题) 4 个最高频排错,或完整版 [docs/setup.md](./docs/setup.md)。
 
 ---
 
