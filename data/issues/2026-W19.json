@@ -1,11 +1,11 @@
 {
   "slug": "2026-W19",
-  "generatedAt": "2026-05-07T02:06:15.566Z",
+  "generatedAt": "2026-05-07T03:09:54.016Z",
   "hero": {
     "owner": "rtk-ai",
     "repo": "rtk",
     "description": "CLI proxy that reduces LLM token consumption by 60-90% on common dev commands. Single Rust binary, zero dependencies",
-    "stars": 43068,
+    "stars": 43112,
     "starsDelta": 4651,
     "language": "Rust",
     "topics": [],
@@ -19,10 +19,10 @@
       }
     },
     "score": 98,
-    "reason": "CLI代理，大幅降低LLM token消耗，Rust实现，零依赖，性能敏感，极贴合开发者需求。",
+    "reason": "RTK是Rust CLI代理，大幅减少LLM令牌消耗，极度匹配。",
     "summary": {
-      "zh": "rtk 是减少开发命令 LLM token 消耗的 CLI 代理，节省 60-90%，单文件 Rust 二进制，零依赖。",
-      "en": "rtk is a command-line proxy designed to slash LLM token consumption for development commands, achieving reductions of 60-90%. It is delivered as a single Rust binary with zero external dependencies, making it incredibly lightweight and easy to deploy. By optimizing LLM interactions, rtk helps developers save on API costs and accelerate their terminal workflows, establishing itself as a must-have tool for efficient development."
+      "zh": "这是一个CLI代理，可将常见开发命令的LLM令牌消耗降低60-90%，单一Rust二进制文件，零依赖，效率极高。",
+      "en": "RTK is a CLI proxy that reduces LLM token consumption by 60-90% on common dev commands. It is a single Rust binary with zero dependencies, offering a lightweight and efficient solution for developers to save on API costs."
     }
   },
   "items": [
@@ -30,7 +30,7 @@
       "owner": "warpdotdev",
       "repo": "warp",
       "description": "Warp is an agentic development environment, born out of the terminal.",
-      "stars": 55778,
+      "stars": 55829,
       "starsDelta": 15633,
       "language": "Rust",
       "topics": [],
@@ -44,45 +44,21 @@
         }
       },
       "score": 95,
-      "reason": "基于终端的智能开发环境，融合AI与终端UI，Rust开发，高度匹配。",
+      "reason": "Warp是Rust编写的代理开发环境，完美契合终端UI和开发者工具主题。",
       "summary": {
-        "zh": "Warp 是一款基于 Rust 的智能终端开发环境，集成了 AI 驱动的命令建议和协作功能，可替代传统终端。",
-        "en": "Warp is a modern terminal application and development environment built in Rust, leveraging AI to create an agentic workspace directly in the command line. It seamlessly replaces traditional terminals like Terminal or iTerm2 by offering smart command completions, collaborative editing, and automated workflows, making it an indispensable tool for developers."
+        "zh": "Warp 是一个基于人工智能的现代化终端，旨在取代传统终端，提供智能命令补全和协作功能。",
+        "en": "Warp is an AI-powered modern terminal that replaces traditional terminals, offering smart command completions and collaboration features as an agentic development environment."
       }
     },
     {
-      "owner": "farion1231",
-      "repo": "cc-switch",
-      "description": "A cross-platform desktop All-in-One assistant tool for Claude Code, Codex, OpenCode, openclaw & Gemini CLI.",
-      "stars": 61231,
-      "starsDelta": 5647,
+      "owner": "junhoyeo",
+      "repo": "tokscale",
+      "description": "🛰️ A CLI tool for tracking token usage from OpenCode, Claude Code, 🦞OpenClaw (Clawdbot/Moltbot), Pi, Codex, Gemini, Cursor, AmpCode, Factory Droid, Kimi, and more! • 🏅Global Leaderboard + 2D/3D Contributions Graph",
+      "stars": 2647,
+      "starsDelta": 271,
       "language": "Rust",
       "topics": [],
-      "url": "https://github.com/farion1231/cc-switch",
-      "sources": [
-        "trending"
-      ],
-      "sourceMeta": {
-        "trending": {
-          "window": "weekly"
-        }
-      },
-      "score": 93,
-      "reason": "多AI编码助手桌面集成工具，Rust编写，直接服务于LLM工具链。",
-      "summary": {
-        "zh": "cc-switch 是一款跨平台桌面工具，整合 Claude Code、Codex、OpenCode、openclaw 与 Gemini CLI，支持在统一界面快速切换多种 AI 编程助手。",
-        "en": "cc-switch is a cross-platform desktop app that unifies CLI-based AI coding assistants like Claude Code, Codex, OpenCode, openclaw, and Gemini CLI into a single interface. It eliminates the need to manage multiple terminals by allowing quick switching between assistants, boosting developer efficiency. A standout feature is its seamless integration of diverse AI tools on the desktop."
-      }
-    },
-    {
-      "owner": "zed-industries",
-      "repo": "zed",
-      "description": "Code at the speed of thought – Zed is a high-performance, multiplayer code editor from the creators of Atom and Tree-sitter.",
-      "stars": 82020,
-      "starsDelta": 2002,
-      "language": "Rust",
-      "topics": [],
-      "url": "https://github.com/zed-industries/zed",
+      "url": "https://github.com/junhoyeo/tokscale",
       "sources": [
         "trending"
       ],
@@ -92,17 +68,17 @@
         }
       },
       "score": 92,
-      "reason": "高性能多人代码编辑器，Rust系统编程，极致性能，开发者利器。",
+      "reason": "Tokscale是Rust CLI跟踪AI令牌使用，完美匹配LLM工具。",
       "summary": {
-        "zh": "Zed是由Atom和Tree-sitter团队打造的高性能协作代码编辑器，基于Rust，以思维速度编程，主打实时多人编辑，是传统编辑器的现代替代品。",
-        "en": "Zed is a high-performance, multiplayer code editor created by the team behind Atom and Tree-sitter. Built in Rust, it emphasizes speed and collaboration, enabling developers to code at the speed of thought. Its standout feature is real-time multiplayer editing, allowing multiple users to work together seamlessly. Zed aims to replace slower editors and provides a modern, fast alternative for coding workflows."
+        "zh": "一个追踪多种AI编程工具Token使用量的CLI工具，配有全球排行榜和3D贡献图。",
+        "en": "tokscale is a Rust-based CLI tool that tracks token usage from popular AI coding assistants like OpenCode, Claude Code, and Cursor. It features a global leaderboard and 2D/3D contribution graphs, making it easy to monitor and compare usage across different platforms."
       }
     },
     {
       "owner": "1jehuang",
       "repo": "jcode",
       "description": "Coding Agent Harness",
-      "stars": 4530,
+      "stars": 4556,
       "starsDelta": 3332,
       "language": "Rust",
       "topics": [],
@@ -116,10 +92,34 @@
         }
       },
       "score": 90,
-      "reason": "编码代理框架，Rust实现，面向LLM工具，低层级高性能。",
+      "reason": "jcode是Rust编码代理工具，直接匹配LLM工具和开发者工具。",
       "summary": {
-        "zh": "jcode是一个开源AI编码代理框架，支持自主代码生成与修改，相比传统辅助工具更灵活，可接入多种大模型，并具备实时迭代优化能力。",
-        "en": "jcode is an open-source harness for AI coding agents that enables autonomous code generation, editing, and task execution. Unlike traditional code assistants that merely suggest snippets, it provides a flexible framework supporting multiple large language models and a terminal-based interface. A standout feature is its iterative refinement loop, which continuously improves code through automated testing and feedback, making it a powerful tool for developers seeking agentic coding workflows. With 4,500 stars, it's built in Rust for performance and reliability."
+        "zh": "JCode 是一个用 Rust 编写的编码代理框架，旨在替代传统编码助手，支持多语言代码生成与实时调试。",
+        "en": "JCode is a coding agent harness written in Rust, designed to replace traditional coding assistants with multi-language code generation and real-time debugging, offering a seamless integration for developers."
+      }
+    },
+    {
+      "owner": "farion1231",
+      "repo": "cc-switch",
+      "description": "A cross-platform desktop All-in-One assistant tool for Claude Code, Codex, OpenCode, openclaw & Gemini CLI.",
+      "stars": 61339,
+      "starsDelta": 5647,
+      "language": "Rust",
+      "topics": [],
+      "url": "https://github.com/farion1231/cc-switch",
+      "sources": [
+        "trending"
+      ],
+      "sourceMeta": {
+        "trending": {
+          "window": "weekly"
+        }
+      },
+      "score": 88,
+      "reason": "cc-switch是Rust跨平台AI助手，契合LLM工具和终端UI。",
+      "summary": {
+        "zh": "跨平台桌面一体式助手，整合Claude Code、Codex等CLI工具，支持多模型切换与配置管理。",
+        "en": "A cross-platform desktop all-in-one assistant tool that integrates multiple CLI tools including Claude Code, Codex, OpenCode, openclaw, and Gemini CLI. It allows users to switch between different AI coding assistants seamlessly, manage configurations, and streamline workflows. Notable feature: provides a unified interface for multiple command-line AI tools, eliminating the need to switch between separate terminals or contexts."
       }
     }
   ],
