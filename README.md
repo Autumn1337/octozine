@@ -269,6 +269,38 @@ GitHub Pages 的 Source 没选 **GitHub Actions**。
 
 ---
 
+## 跟进上游更新
+
+GitHub fork **不会自动同步上游**。我修 bug / 加新 feature 后,你的 fork 还停留在 fork 时的版本,需要主动 sync。
+
+### 一键 sync
+
+去你 fork 主页 → 上方 **Sync fork** → **Update branch**。如果你只改过 `config/config.yaml` 的 `github_username` + `provider`,而上游没动 config(纯代码 / 文档更新),GitHub 会自动 merge,一键搞定。
+
+### 有冲突怎么办
+
+最常见的:你改了 `config/config.yaml`,而我恰好也调了里面的某个默认值(比如 `top_n: 5 → 8`)。GitHub 会标 "Conflicts must be resolved",**Sync fork** 按钮 disable。
+
+最简单解法 —— 在 GitHub 网页上手动 merge:
+
+1. 点 fork 主页右上 **Sync fork** → **Discard X commits** 不要点(会丢你的 username 改动)
+2. 改用本地命令:
+   ```bash
+   git clone https://github.com/yourname/octozine && cd octozine
+   git remote add upstream https://github.com/Autumn1337/octozine
+   git fetch upstream
+   git merge upstream/main
+   # 编辑 config/config.yaml 解决冲突,保留你的 username + provider,合上游的新字段
+   git add config/config.yaml && git commit
+   git push
+   ```
+
+### 不想总 sync 也 OK
+
+你 fork 当时的代码会一直工作。重大改动我会通过 [GitHub Releases](https://github.com/Autumn1337/octozine/releases) 标 tag —— [Watch](https://github.com/Autumn1337/octozine) 这个 repo 选 "Releases only" 就能在 critical fix 时收到通知。
+
+---
+
 ## 为什么不用现成工具
 
 | 工具 | 它做什么 | Octozine 不一样 |

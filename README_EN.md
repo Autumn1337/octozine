@@ -269,6 +269,36 @@ More troubleshooting: [docs/setup.md](./docs/setup.md).
 
 ---
 
+## Keeping your fork up to date
+
+GitHub forks **don't auto-sync from upstream**. When I fix a bug or ship a new feature, your fork stays at whatever version you forked at — you have to pull updates yourself.
+
+### One-click sync
+
+On your fork's main page, click **Sync fork → Update branch**. If you only edited `github_username` + `provider` in `config/config.yaml` and upstream hasn't touched `config.yaml`, GitHub will auto-merge it cleanly.
+
+### Resolving conflicts
+
+The most common case: you customized `config/config.yaml`, and I happened to bump a default in the same file (e.g. `top_n: 5 → 8`). GitHub flags "Conflicts must be resolved" and disables the **Sync fork** button.
+
+Easiest fix is locally:
+
+```bash
+git clone https://github.com/yourname/octozine && cd octozine
+git remote add upstream https://github.com/Autumn1337/octozine
+git fetch upstream
+git merge upstream/main
+# Edit config/config.yaml: keep YOUR username + provider, accept the new upstream defaults
+git add config/config.yaml && git commit
+git push
+```
+
+### Or skip syncing
+
+Your fork at the version you forked will keep working. Major changes ship as [GitHub Releases](https://github.com/Autumn1337/octozine/releases) — [Watch](https://github.com/Autumn1337/octozine) the repo set to "Releases only" so you get a notification on critical fixes.
+
+---
+
 ## Why Not Existing Tools
 
 | Tool | What it does | What Octozine does differently |
