@@ -305,9 +305,8 @@ GitHub Actions runners don't need this.
 
 ## Design docs
 
-- Full spec: [docs/superpowers/specs/2026-05-06-octozine-design.md](./docs/superpowers/specs/2026-05-06-octozine-design.md)
-- Implementation plans: [docs/superpowers/plans/](./docs/superpowers/plans/)
-- User setup guide: [docs/setup.md](./docs/setup.md)
+- Architecture and design decisions: [docs/design.md](./docs/design.md)
+- Detailed user setup: [docs/setup.md](./docs/setup.md)
 
 ---
 

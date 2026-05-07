@@ -304,9 +304,8 @@ GitHub Actions 不需要代理。
 
 ## 设计文档
 
-- 完整 spec: [docs/superpowers/specs/2026-05-06-octozine-design.md](./docs/superpowers/specs/2026-05-06-octozine-design.md)
-- 实现 plans: [docs/superpowers/plans/](./docs/superpowers/plans/)
-- 用户 setup: [docs/setup.md](./docs/setup.md)
+- 架构和设计决策: [docs/design.md](./docs/design.md)
+- 用户 setup 详解: [docs/setup.md](./docs/setup.md)
 
 ---
 
