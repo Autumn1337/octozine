@@ -13,12 +13,19 @@ export async function fetchTrending(opts: TrendingOpts): Promise<Candidate[]> {
   const all: Candidate[] = [];
   for (const lang of langs) {
     const url = `${BASE}${lang ? "/" + encodeURIComponent(lang) : ""}?since=${opts.window}`;
-    const res = await fetch(url, { headers: { "User-Agent": "octozine/0.1" } });
-    if (!res.ok) {
-      throw new Error(`trending fetch failed for ${lang || "all"}: HTTP ${res.status}`);
+    try {
+      const res = await fetch(url, { headers: { "User-Agent": "octozine/0.1" } });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const html = await res.text();
+      all.push(...parseTrending(html, opts.window));
+    } catch (e) {
+      console.warn(`[fetch:trending] ${lang || "all"} failed:`, (e as Error).message);
     }
-    const html = await res.text();
-    all.push(...parseTrending(html, opts.window));
+  }
+  if (all.length === 0) {
+    throw new Error("trending fetch failed: all language pages returned zero usable results");
   }
   return all;
 }

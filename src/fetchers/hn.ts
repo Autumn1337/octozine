@@ -21,11 +21,11 @@ export function extractRepoFromUrl(raw: string): { owner: string; repo: string }
   try { u = new URL(raw); } catch { return null; }
   if (u.hostname !== "github.com" && u.hostname !== "www.github.com") return null;
   const parts = u.pathname.replace(/^\/+|\/+$/g, "").split("/");
-  if (parts.length !== 2) return null;
+  if (parts.length < 2) return null;
   const [owner, repo] = parts;
   if (!owner || !repo) return null;
   if (RESERVED_OWNERS.has(owner.toLowerCase())) return null;
-  return { owner, repo };
+  return { owner, repo: repo.replace(/\.git$/, "") };
 }
 
 type AlgoliaHit = {

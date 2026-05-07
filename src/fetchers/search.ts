@@ -52,12 +52,19 @@ export async function fetchSearch(opts: SearchOpts): Promise<Candidate[]> {
     const url =
       `https://api.github.com/search/repositories?q=${encodeURIComponent(q)}` +
       `&sort=stars&order=desc&per_page=30`;
-    const res = await fetch(url, { headers });
-    if (!res.ok) {
-      throw new Error(`search fetch failed for "${q}": HTTP ${res.status}`);
+    try {
+      const res = await fetch(url, { headers });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const json = (await res.json()) as { items?: SearchItem[] };
+      out.push(...parseSearchResponse(json, raw));
+    } catch (e) {
+      console.warn(`[fetch:search] query failed "${q}":`, (e as Error).message);
     }
-    const json = (await res.json()) as { items?: SearchItem[] };
-    out.push(...parseSearchResponse(json, raw));
+  }
+  if (out.length === 0 && opts.queries.length > 0) {
+    throw new Error("search fetch failed: all queries returned zero usable results");
   }
   return out;
 }

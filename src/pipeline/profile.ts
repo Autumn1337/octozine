@@ -168,23 +168,39 @@ export type FetchStarredOpts = {
 };
 
 export async function fetchStarred(opts: FetchStarredOpts): Promise<StarredItem[]> {
-  const perPage = Math.min(Math.max(opts.limit ?? 150, 1), 100);
-  const url =
-    `https://api.github.com/users/${encodeURIComponent(opts.username)}/starred` +
-    `?per_page=${perPage}&sort=updated`;
-  const res = await fetch(url, { headers: ghHeaders(opts.token) });
-  if (!res.ok) throw new Error(`starred fetch failed: HTTP ${res.status}`);
-  return parseStarredResponse(await res.json()).slice(0, opts.limit ?? 150);
+  const limit = opts.limit ?? 150;
+  const items: StarredItem[] = [];
+  for (let page = 1; items.length < limit; page++) {
+    const perPage = Math.min(100, limit - items.length);
+    const url =
+      `https://api.github.com/users/${encodeURIComponent(opts.username)}/starred` +
+      `?per_page=${perPage}&page=${page}&sort=updated`;
+    const res = await fetch(url, { headers: ghHeaders(opts.token) });
+    if (!res.ok) throw new Error(`starred fetch failed: HTTP ${res.status}`);
+    const batch = parseStarredResponse(await res.json());
+    if (batch.length === 0) break;
+    items.push(...batch);
+    if (batch.length < perPage) break;
+  }
+  return items.slice(0, limit);
 }
 
 export async function fetchOwnedRepos(opts: FetchStarredOpts): Promise<RepoSignal[]> {
-  const perPage = Math.min(Math.max(opts.limit ?? 100, 1), 100);
-  const url =
-    `https://api.github.com/users/${encodeURIComponent(opts.username)}/repos` +
-    `?per_page=${perPage}&sort=updated&type=owner`;
-  const res = await fetch(url, { headers: ghHeaders(opts.token) });
-  if (!res.ok) throw new Error(`owned repos fetch failed: HTTP ${res.status}`);
-  return parseOwnedReposResponse(await res.json()).slice(0, opts.limit ?? 100);
+  const limit = opts.limit ?? 100;
+  const items: RepoSignal[] = [];
+  for (let page = 1; items.length < limit; page++) {
+    const perPage = Math.min(100, limit - items.length);
+    const url =
+      `https://api.github.com/users/${encodeURIComponent(opts.username)}/repos` +
+      `?per_page=${perPage}&page=${page}&sort=updated&type=owner`;
+    const res = await fetch(url, { headers: ghHeaders(opts.token) });
+    if (!res.ok) throw new Error(`owned repos fetch failed: HTTP ${res.status}`);
+    const batch = parseOwnedReposResponse(await res.json());
+    if (batch.length === 0) break;
+    items.push(...batch);
+    if (batch.length < perPage) break;
+  }
+  return items.slice(0, limit);
 }
 
 export async function fetchUserProfile(opts: { username: string; token?: string }): Promise<UserProfileSignal> {
@@ -452,9 +468,13 @@ const EvidenceGenSchema = z.object({
   note: z.string().min(1),
 });
 
+// LLMs sometimes ignore the "weight ∈ [0,1]" instruction in the prompt and
+// emit raw counts (e.g. weight: 2.75 for Python with 6 evidence). We accept
+// any non-negative number here and normalize per-group to [0,1] downstream
+// in generateProfile, so a misbehaving model doesn't blow up the whole run.
 const ThemeGenSchema = z.object({
   name: z.string().min(3),
-  weight: z.number().min(0).max(1),
+  weight: z.number().min(0),
   confidence: z.enum(["low", "medium", "high"]),
   evidence: z.array(EvidenceGenSchema).min(1),
 });
@@ -465,7 +485,7 @@ const ProfileGenSchema = z.object({
   secondary_themes: z.array(ThemeGenSchema),
   languages: z.array(z.object({
     name: z.string().min(1),
-    weight: z.number().min(0).max(1),
+    weight: z.number().min(0),
     evidence_count: z.number().int().nonnegative(),
   })),
   exclude_themes: z.array(z.object({
@@ -475,6 +495,18 @@ const ProfileGenSchema = z.object({
   })),
   notes: z.string().min(1),
 });
+
+/**
+ * Rescale a list's `weight` so the maximum is exactly 1.0, preserving
+ * relative ratios. No-op when all weights are already ≤ 1.
+ * Floors weight at 0 (defensive — schema already enforces >= 0).
+ */
+function normalizeWeights<T extends { weight: number }>(items: T[]): T[] {
+  if (items.length === 0) return items;
+  const maxW = items.reduce((m, i) => Math.max(m, i.weight), 0);
+  if (maxW <= 1) return items;
+  return items.map(i => ({ ...i, weight: Number((i.weight / maxW).toFixed(2)) }));
+}
 
 export type GenerateProfileOpts = {
   baseUrl: string;
@@ -547,23 +579,23 @@ export async function generateProfile(
         readmes: context.readmeExcerpts.length,
       },
     },
-    coreThemes: parsed.core_themes.map(t => ({
+    coreThemes: normalizeWeights(parsed.core_themes.map(t => ({
       name: t.name,
       weight: t.weight,
       confidence: t.confidence,
       evidence: t.evidence,
-    })),
-    secondaryThemes: parsed.secondary_themes.map(t => ({
+    }))),
+    secondaryThemes: normalizeWeights(parsed.secondary_themes.map(t => ({
       name: t.name,
       weight: t.weight,
       confidence: t.confidence,
       evidence: t.evidence,
-    })),
-    languages: parsed.languages.map(l => ({
+    }))),
+    languages: normalizeWeights(parsed.languages.map(l => ({
       name: l.name.toLowerCase(),
       weight: l.weight,
       evidenceCount: l.evidence_count,
-    })),
+    }))),
     excludeThemes: parsed.exclude_themes.map(t => ({
       name: t.name,
       confidence: t.confidence,

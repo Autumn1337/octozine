@@ -15,8 +15,13 @@ describe("extractRepoFromUrl", () => {
     expect(extractRepoFromUrl("https://github.com/cli/cli/"))
       .toEqual({ owner: "cli", repo: "cli" });
   });
-  it("rejects deep paths (issues, blob, etc.)", () => {
-    expect(extractRepoFromUrl("https://github.com/cli/cli/issues/123")).toBeNull();
+  it("accepts repo subpaths and strips .git suffix", () => {
+    expect(extractRepoFromUrl("https://github.com/cli/cli/issues/123"))
+      .toEqual({ owner: "cli", repo: "cli" });
+    expect(extractRepoFromUrl("https://github.com/cli/cli/blob/main/README.md"))
+      .toEqual({ owner: "cli", repo: "cli" });
+    expect(extractRepoFromUrl("https://github.com/cli/cli.git"))
+      .toEqual({ owner: "cli", repo: "cli" });
     expect(extractRepoFromUrl("https://github.com/blog/foo")).toBeNull();
   });
   it("rejects non-github URLs", () => {

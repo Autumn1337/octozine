@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import {
   parseStarredResponse,
   parseOwnedReposResponse,
+  fetchStarred,
   parseUserEvents,
   analyzeProfileSignals,
   buildProfileContext,
@@ -132,6 +133,34 @@ describe("buildProfileContext", () => {
     expect(ctx.explicitPreferences.include).toEqual(["rust cli"]);
     expect(ctx.readmeExcerpts).toHaveLength(1);
     expect(ctx.readmeExcerpts[0]!.excerpt).toHaveLength(2000);
+  });
+});
+
+describe("fetchStarred", () => {
+  it("paginates when the configured limit is above 100", async () => {
+    const calls: string[] = [];
+    globalThis.fetch = vi.fn(async (url: string | URL) => {
+      calls.push(String(url));
+      const page = String(url).includes("page=2") ? 2 : 1;
+      const count = page === 1 ? 100 : 50;
+      const items = Array.from({ length: count }, (_, i) => ({
+        full_name: `org/repo-${page}-${i}`,
+        description: "x",
+        topics: ["cli"],
+        language: "Rust",
+        stargazers_count: 1,
+        fork: false,
+        archived: false,
+      }));
+      return new Response(JSON.stringify(items));
+    }) as unknown as typeof fetch;
+
+    const out = await fetchStarred({ username: "alice", limit: 150 });
+    expect(out).toHaveLength(150);
+    expect(calls).toHaveLength(2);
+    expect(calls[0]).toContain("per_page=100");
+    expect(calls[1]).toContain("per_page=50");
+    expect(calls[1]).toContain("page=2");
   });
 });
 
