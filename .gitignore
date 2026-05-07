@@ -9,3 +9,10 @@ dist/
 tmp-e2e/
 web/.astro/
 web/dist/
+
+# superpowers handoff plugin auto-saves conversation context here — keep private
+docs/handoff/
+
+# coverage / cache
+coverage/
+.vitest-cache/
