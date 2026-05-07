@@ -57,7 +57,7 @@ describe("renderTelegramMarkdown", () => {
     expect(out).toContain("2026\\-W19");
     expect(out).toContain("ratatui\\-org/ratatui");
     expect(out).toContain("rust\\-lang/rust");
-    expect(out).toContain("https://github.com/ratatui-org/ratatui");
+    expect(out).toContain("https://github\\.com/ratatui\\-org/ratatui");
     // typical issue must fit comfortably under Telegram's 4096-char limit
     expect(out.length).toBeLessThanOrEqual(4096);
   });

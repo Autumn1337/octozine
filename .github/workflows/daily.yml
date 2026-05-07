@@ -53,6 +53,12 @@ jobs:
       - name: Install root deps
         run: npm ci
 
+      - name: Test root
+        run: npm test
+
+      - name: Typecheck root
+        run: npm run typecheck
+
       - name: Run pipeline
         env:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
@@ -60,6 +66,23 @@ jobs:
           # and is required if you enable the `events` source. See docs/setup.md.
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run pipeline
+
+      - name: Commit new issue data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data/ config/profile.yaml config/config.yaml; then
+            echo "no data/ or config/ changes to commit"
+            exit 0
+          fi
+          git add data/
+          # M6: profile auto-gen may rewrite profile.yaml and flip regenerate flag
+          if [ -f config/profile.yaml ]; then git add config/profile.yaml; fi
+          if [ -f config/config.yaml ];  then git add config/config.yaml;  fi
+          slug=$(git diff --staged --name-only -- data/issues/ | grep -oE '[0-9]{4}-W[0-9]{2}' | head -1)
+          slug=${slug:-untitled}
+          git commit -m "data: issue ${slug} [skip ci]"
+          git push
 
       - name: Install web deps
         working-directory: web
@@ -92,20 +115,3 @@ jobs:
           SMTP_FROM: ${{ secrets.SMTP_FROM }}
         run: npm run push
         continue-on-error: true       # site is already deployed; push failures must not block commit-back
-
-      - name: Commit new issue data
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- data/ config/profile.yaml config/config.yaml; then
-            echo "no data/ or config/ changes to commit"
-            exit 0
-          fi
-          git add data/
-          # M6: profile auto-gen may rewrite profile.yaml and flip regenerate flag
-          if [ -f config/profile.yaml ]; then git add config/profile.yaml; fi
-          if [ -f config/config.yaml ];  then git add config/config.yaml;  fi
-          slug=$(git diff --staged --name-only -- data/issues/ | grep -oE '[0-9]{4}-W[0-9]{2}' | head -1)
-          slug=${slug:-untitled}
-          git commit -m "data: issue ${slug} [skip ci]"
-          git push

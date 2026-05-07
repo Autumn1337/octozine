@@ -10,7 +10,7 @@ const fmtItem = (n: number, i: SummarizedItem): string =>
   `${n}\\. *${escapeMarkdownV2(`${i.owner}/${i.repo}`)}* \\(★${i.stars}\\)\n` +
   `${escapeMarkdownV2(i.summary.zh)}\n` +
   `_${escapeMarkdownV2(i.reason)}_\n` +
-  i.url;
+  escapeMarkdownV2(i.url);
 
 // Telegram sendMessage hard-limits text to 4096 chars. With topN = 5 a typical
 // issue is ~1500–2000 chars, but topN = 10 + bilingual reasons can blow past it.
