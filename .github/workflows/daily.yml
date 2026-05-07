@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 9 * * 1"          # weekly Monday 09:00 UTC; change via `npm run sync-cron`
   workflow_dispatch:
+    inputs:
+      skip_pipeline:
+        description: "Skip pipeline & commit-back; only rebuild + deploy site (zero LLM cost)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write                # commit data/ back
@@ -60,6 +65,7 @@ jobs:
         run: npm run typecheck
 
       - name: Run pipeline
+        if: ${{ inputs.skip_pipeline != true }}
         env:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           # GH_TOKEN raises GitHub REST rate limit (60 → 5000 req/h) for hn enrichment
@@ -68,6 +74,7 @@ jobs:
         run: npm run pipeline
 
       - name: Commit new issue data
+        if: ${{ inputs.skip_pipeline != true }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
