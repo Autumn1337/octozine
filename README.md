@@ -57,16 +57,16 @@
 
 ### Step 1 · Fork
 
-点 [👉 Fork this repo 👈](https://github.com/Autumn1337/octozine/fork)。Fork 完成后你会得到 `https://github.com/<你>/octozine`,**之后所有 Step 都在你这个 fork 里操作**。
+点 [👉 Fork this repo 👈](https://github.com/Autumn1337/octozine/fork)。Fork 完成后你会得到 `https://github.com/yourname/octozine`(`yourname` 即你的 GitHub username),**之后所有 Step 都在你这个 fork 里操作**。
 
 ### Step 2 · 改 `config/config.yaml` 这两行
 
 在你 fork 的页面点开 `config/config.yaml`,右上角的 ✏️ 铅笔图标进入编辑,改这两个值:
 
 ```yaml
-github_username: <你的 GitHub username>     # ← 改成你的(决定从谁的 starred 推断画像)
+github_username: yourname            # ← 替换成你的 GitHub username,例:Autumn1337(不带引号、不带尖括号)
 llm:
-  provider: deepseek                         # ← 改成你拿了 key 的那家(deepseek / openai / qwen / ...)
+  provider: deepseek                 # ← 改成你拿了 key 的那家(deepseek / openai / qwen / ...)
 ```
 
 页面底部 **Commit changes** 直接 commit 到 main 即可。
@@ -96,15 +96,15 @@ llm:
 
 ### 🎉 完成后你会看到
 
-3-4 分钟内,Action 跑完,**你的 main 分支上多 1 个 commit**:
+3-4 分钟内,Action 跑完,**你的 main 分支上多 1 个 commit**(`2026-W19` 是 ISO 周编号,以当周为准):
 
 ```
-data: issue 2026-WXX [skip ci]
-   - data/issues/<slug>.json   本周生成的内容
-   - config/profile.yaml       LLM 从你 starred 推断的画像
+data: issue 2026-W19 [skip ci]
+   - data/issues/2026-W19.json   本周生成的内容
+   - config/profile.yaml         LLM 从你 starred 推断的画像
 ```
 
-然后 **你的站点 live 在** `https://<你的 username>.github.io/<repo 名>/`。
+然后 **你的站点 live 在** `https://yourname.github.io/octozine/`(把 `yourname` 换成你的 GitHub username,例:`Autumn1337.github.io/octozine`)。
 
 之后每周一 09:00 UTC 自动跑一次(改频率/时区见 [docs/setup.md](./docs/setup.md))。
 

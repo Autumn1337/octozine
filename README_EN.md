@@ -57,16 +57,16 @@ All 5 steps below are done **on the GitHub web UI**—no git clone needed.
 
 ### Step 1 · Fork
 
-Click [👉 Fork this repo 👈](https://github.com/Autumn1337/octozine/fork). After forking, you'll have `https://github.com/<you>/octozine`. **Every step below happens inside your fork.**
+Click [👉 Fork this repo 👈](https://github.com/Autumn1337/octozine/fork). After forking, you'll have `https://github.com/yourname/octozine` (where `yourname` is your GitHub username). **Every step below happens inside your fork.**
 
 ### Step 2 · Edit two lines in `config/config.yaml`
 
 In your fork, open `config/config.yaml`, click the ✏️ pencil icon (top-right of the file view) to edit, and change these two values:
 
 ```yaml
-github_username: <your GitHub username>      # ← used to infer your taste from your starred repos
+github_username: yourname            # ← replace with your GitHub username, e.g. Autumn1337 (no quotes, no angle brackets)
 llm:
-  provider: deepseek                          # ← whichever provider you got a key for (deepseek / openai / qwen / ...)
+  provider: deepseek                 # ← whichever provider you got a key for (deepseek / openai / qwen / ...)
 ```
 
 Scroll down → **Commit changes** directly to main.
@@ -96,15 +96,15 @@ Go to the **Actions** tab → pick **Octozine Daily** in the left sidebar → cl
 
 ### 🎉 What success looks like
 
-In 3-4 minutes, the Action finishes and **a new commit lands on your main branch**:
+In 3-4 minutes, the Action finishes and **a new commit lands on your main branch** (the `2026-W19` is the ISO week number for whichever week you ran):
 
 ```
-data: issue 2026-WXX [skip ci]
-   - data/issues/<slug>.json   this week's generated content
-   - config/profile.yaml       LLM-inferred profile from your starred repos
+data: issue 2026-W19 [skip ci]
+   - data/issues/2026-W19.json   this week's generated content
+   - config/profile.yaml         LLM-inferred profile from your starred repos
 ```
 
-Then **your site is live at** `https://<your-username>.github.io/<repo-name>/`.
+Then **your site is live at** `https://yourname.github.io/octozine/` (replace `yourname` with your GitHub username, e.g. `Autumn1337.github.io/octozine`).
 
 After this, the workflow runs every Monday at 09:00 UTC (change frequency/timezone in [docs/setup.md](./docs/setup.md)).
 
