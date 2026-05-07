@@ -1,0 +1,12 @@
+name: Octozine
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo hi
