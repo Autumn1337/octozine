@@ -138,18 +138,21 @@ export async function runPipeline(opts: RunOpts = {}): Promise<IssueData> {
   // 5. build issue
   const issue = buildIssue({ config, profile, items: summarized, generatedAt: now });
 
-  // 6. write issue
+  // 6. update seen.json BEFORE writing the issue file. If the process is killed
+  // between these two writes, dropping the issue (no .json exists yet) is recoverable
+  // — next run regenerates it. The opposite order (issue exists, seen.json stale)
+  // would cause the same repos to be recommended again next run.
   const issuesDir = path.join(root, "data/issues");
   await mkdir(issuesDir, { recursive: true });
-  const out = path.join(issuesDir, `${issue.slug}.json`);
-  await writeFile(out, JSON.stringify(issue, null, 2) + "\n", "utf8");
-  console.log(`Wrote ${out}`);
-
-  // 7. update seen.json
   const issueRepoKeys = [issue.hero, ...issue.items].map(i => ({ owner: i.owner, repo: i.repo }));
   const nextSeen = updateSeen(seen, issue.slug, issueRepoKeys);
   await writeFile(seenPath, JSON.stringify(nextSeen, null, 2) + "\n", "utf8");
   console.log(`Updated ${seenPath}`);
+
+  // 7. write issue file
+  const out = path.join(issuesDir, `${issue.slug}.json`);
+  await writeFile(out, JSON.stringify(issue, null, 2) + "\n", "utf8");
+  console.log(`Wrote ${out}`);
 
   return issue;
 }

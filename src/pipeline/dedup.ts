@@ -13,7 +13,11 @@ export function dedupCandidates(items: Candidate[]): Candidate[] {
     const sourceMeta = { ...prev.sourceMeta, ...c.sourceMeta };
     const description = prev.description.length >= c.description.length ? prev.description : c.description;
     const stars = Math.max(prev.stars, c.stars);
-    const starsDelta = Math.max(prev.starsDelta ?? 0, c.starsDelta ?? 0) || prev.starsDelta || c.starsDelta;
+    // Use explicit undefined check so a real `starsDelta: 0` survives the merge —
+    // the previous `... || prev.starsDelta || c.starsDelta` chain dropped 0 as falsy.
+    const starsDelta = (prev.starsDelta !== undefined || c.starsDelta !== undefined)
+      ? Math.max(prev.starsDelta ?? 0, c.starsDelta ?? 0)
+      : undefined;
     const language = prev.language ?? c.language;
     const topics = Array.from(new Set([...prev.topics, ...c.topics]));
     const merged: Candidate = {
