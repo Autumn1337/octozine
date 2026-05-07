@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://autumn1337.github.io/octozine/">
-    <img src="https://raw.githubusercontent.com/Autumn1337/octozine/main/docs/images/hero.png" width="720" alt="Octozine — magazine-style GitHub Pages site">
+    <img src="https://raw.githubusercontent.com/Autumn1337/octozine/main/docs/images/banner.png" width="720" alt="Octozine — a folio of GitHub, curated weekly">
   </a>
 </p>
 
