@@ -33,7 +33,14 @@ const ConfigSchema = z.object({
   schedule: z.string(),
   languages: z.array(z.enum(["zh", "en"])).min(1),
   github_username: z.string().min(1),
-  profile: z.object({ regenerate: z.boolean() }),
+  profile: z.object({
+    regenerate: z.boolean(),
+    include: z.array(z.string()).default([]),
+    exclude: z.array(z.string()).default([]),
+    readme_repos: z.number().int().nonnegative().default(8),
+    starred_limit: z.number().int().positive().default(150),
+    activity_limit: z.number().int().nonnegative().default(50),
+  }),
   llm: z.object({
     provider: z.string().min(1).optional(),
     base_url: z.string().url().optional(),
@@ -46,10 +53,51 @@ const ConfigSchema = z.object({
   history_window: z.number().int().nonnegative(),
 });
 
+const EvidenceSchema = z.object({
+  source: z.enum(["explicit", "profile", "owned_repo", "activity_repo", "starred_repo", "readme"]),
+  repo: z.string().optional(),
+  note: z.string(),
+});
+
+const ThemeSchema = z.object({
+  name: z.string(),
+  weight: z.number().min(0).max(1),
+  confidence: z.enum(["low", "medium", "high"]),
+  evidence: z.array(EvidenceSchema).min(1),
+});
+
+// js-yaml parses unquoted ISO dates (e.g. `2026-05-07`) into Date objects, but
+// the rest of the pipeline expects an ISO date string. Accept either shape so
+// hand-edited profile.yaml files don't need to remember to quote the date.
+const IsoDateString = z.union([
+  z.string(),
+  z.date().transform(d => d.toISOString().slice(0, 10)),
+]);
+
 const ProfileSchema = z.object({
-  themes: z.array(z.string()),
-  languages: z.array(z.string()),
-  exclude_themes: z.array(z.string()),
+  version: z.literal(2),
+  generated_from: z.object({
+    username: z.string(),
+    generated_at: IsoDateString,
+    signals: z.object({
+      owned_repos: z.number().int().nonnegative(),
+      starred_repos: z.number().int().nonnegative(),
+      activity_repos: z.number().int().nonnegative(),
+      readmes: z.number().int().nonnegative(),
+    }),
+  }),
+  core_themes: z.array(ThemeSchema).min(1),
+  secondary_themes: z.array(ThemeSchema),
+  languages: z.array(z.object({
+    name: z.string(),
+    weight: z.number().min(0).max(1),
+    evidence_count: z.number().int().nonnegative(),
+  })),
+  exclude_themes: z.array(z.object({
+    name: z.string(),
+    confidence: z.enum(["low", "medium", "high"]),
+    reason: z.string(),
+  })),
   notes: z.string(),
 });
 
@@ -60,7 +108,14 @@ export function parseConfig(text: string): Config {
     schedule: parsed.schedule,
     languages: parsed.languages,
     githubUsername: parsed.github_username,
-    profile: parsed.profile,
+    profile: {
+      regenerate: parsed.profile.regenerate,
+      include: parsed.profile.include,
+      exclude: parsed.profile.exclude,
+      readmeRepos: parsed.profile.readme_repos,
+      starredLimit: parsed.profile.starred_limit,
+      activityLimit: parsed.profile.activity_limit,
+    },
     llm: resolveLlmConfig({
       provider: (parsed.llm.provider ?? (parsed.llm.base_url ? "custom" : "deepseek")) as ProviderName,
       ...(parsed.llm.base_url ? { baseUrl: parsed.llm.base_url } : {}),
@@ -88,9 +143,39 @@ export function parseProfile(text: string): Profile {
   const raw = yaml.load(text);
   const parsed = ProfileSchema.parse(raw);
   return {
-    themes: parsed.themes,
-    languages: parsed.languages,
-    excludeThemes: parsed.exclude_themes,
+    version: 2,
+    generatedFrom: {
+      username: parsed.generated_from.username,
+      generatedAt: parsed.generated_from.generated_at,
+      signals: {
+        ownedRepos: parsed.generated_from.signals.owned_repos,
+        starredRepos: parsed.generated_from.signals.starred_repos,
+        activityRepos: parsed.generated_from.signals.activity_repos,
+        readmes: parsed.generated_from.signals.readmes,
+      },
+    },
+    coreThemes: parsed.core_themes.map(t => ({
+      name: t.name,
+      weight: t.weight,
+      confidence: t.confidence,
+      evidence: t.evidence,
+    })),
+    secondaryThemes: parsed.secondary_themes.map(t => ({
+      name: t.name,
+      weight: t.weight,
+      confidence: t.confidence,
+      evidence: t.evidence,
+    })),
+    languages: parsed.languages.map(l => ({
+      name: l.name,
+      weight: l.weight,
+      evidenceCount: l.evidence_count,
+    })),
+    excludeThemes: parsed.exclude_themes.map(t => ({
+      name: t.name,
+      confidence: t.confidence,
+      reason: t.reason,
+    })),
     notes: parsed.notes,
   };
 }

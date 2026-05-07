@@ -5,9 +5,16 @@ languages: [zh, en]
 github_username: yourname
 
 profile:
-  # On first run with no profile.yaml present, octozine auto-generates one from your starred repos.
+  # On first run with no profile.yaml present, octozine auto-generates one from your GitHub signals.
   # Set this to `true` to force a refresh on the next run; it will be flipped back automatically.
   regenerate: false
+  # Highest-priority hints for profile generation. Leave empty to infer from GitHub signals only.
+  include: []
+  exclude: []
+  # Multi-signal profile generation limits.
+  readme_repos: 8
+  starred_limit: 150
+  activity_limit: 50
 
 llm:
   # Pick a provider — one line switches base_url + default model.

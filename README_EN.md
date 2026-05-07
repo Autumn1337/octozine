@@ -3,7 +3,7 @@
 <p align="center">
   <em>A folio of GitHub, curated weekly.</em>
   <br>
-  A self-deployable, AI-augmented GitHub discovery tool · Fork it, get a weekly digest <strong>tailored to you</strong>
+  Fork it once. Get a GitHub project zine <strong>tailored to you</strong>.
 </p>
 
 <p align="center">
@@ -23,189 +23,263 @@
 </p>
 
 <p align="center">
-  <a href="https://autumn1337.github.io/octozine/">▶&nbsp;Live&nbsp;demo</a>
-  &nbsp;·&nbsp;
-  <a href="#5-minutes-to-first-issue">⚡&nbsp;Quickstart</a>
-  &nbsp;·&nbsp;
-  <a href="./docs/design.md">📐&nbsp;Design</a>
-  &nbsp;·&nbsp;
-  <a href="./docs/setup.md">🔧&nbsp;Setup</a>
+  <a href="https://autumn1337.github.io/octozine/">Live demo</a>
+  ·
+  <a href="#5-minutes-to-first-issue">5-minute setup</a>
+  ·
+  <a href="./docs/setup.md">Setup</a>
+  ·
+  <a href="./docs/design.md">Design</a>
 </p>
 
 ---
 
-## What is it
+## Not Just Trending
 
-Every Monday, a GitHub Action in your fork:
+GitHub Trending shows everyone the same list. Octozine reads your GitHub signals:
 
-1. **Fetches** ~150 candidate projects (GitHub Trending / Search API / Hacker News)
-2. **Ranks** with an LLM against your interest profile, picks top 5
-3. **Writes** a bilingual (zh + en) summary plus a one-line "why this one" reason
-4. **Publishes** a magazine-style GitHub Pages site; optionally pushes to Telegram / Email / RSS
+- profile / bio
+- public repos you maintain
+- recent public activity
+- starred repos
+- representative README excerpts
 
-Your interest profile is inferred by the LLM from your starred repos — **every fork's output is different**.
+Then it discovers projects from GitHub Trending, Search API, Hacker News, and optional Events, ranks them against your profile, and publishes a weekly magazine-style site.
 
-![list](https://raw.githubusercontent.com/Autumn1337/octozine/main/docs/images/list.png)
+```text
+Your GitHub signals
+profile · owned repos · activity · stars · README
+        ↓
+Discovery sources
+Trending · Search · HN · Events
+        ↓
+LLM curator
+rank · explain · summarize
+        ↓
+Your weekly zine
+GitHub Pages · RSS · Telegram · Email
+```
+
+Every fork gets different output. The point is not “what is popular today”, but “why this project fits you”.
 
 ---
 
-## 5 minutes to first issue
+## 5 Minutes To First Issue
 
-> **Before you start**: grab an LLM API key from [DeepSeek](https://platform.deepseek.com) (or [any other provider](#switch-llm-provider))—it'll be a string like `sk-...` that you'll paste in Step 3.
+Before starting, get an OpenAI-compatible LLM API key. [DeepSeek](https://platform.deepseek.com) is the recommended default, but OpenAI, Qwen, Moonshot, Zhipu, Groq, Ollama, and custom endpoints also work.
 
-All 5 steps below are done **on the GitHub web UI**—no git clone needed.
+All steps below happen on GitHub.com. No local clone required.
 
-### Step 1 · Fork
+### 1. Fork
 
-Click [👉 Fork this repo 👈](https://github.com/Autumn1337/octozine/fork). After forking, you'll have `https://github.com/yourname/octozine` (where `yourname` is your GitHub username). **Every step below happens inside your fork.**
+Click [Fork this repo](https://github.com/Autumn1337/octozine/fork). Everything below happens inside your fork.
 
-### Step 2 · Edit two lines in `config/config.yaml`
+### 2. Edit two config lines
 
-In your fork, open `config/config.yaml`, click the ✏️ pencil icon (top-right of the file view) to edit, and change these two values:
+Open `config/config.yaml`, click the pencil icon, and change:
 
 ```yaml
-github_username: yourname            # ← replace with your GitHub username, e.g. Autumn1337 (no quotes, no angle brackets)
-llm:
-  provider: deepseek                 # ← whichever provider you got a key for (deepseek / openai / qwen / ...)
-```
-
-Scroll down → **Commit changes** directly to main.
-
-### Step 3 · Add the LLM key as a repo secret
-
-Go to your fork's **Settings → Secrets and variables → Actions → New repository secret**:
-
-- **Name**: `LLM_API_KEY` (must be this exact name)
-- **Secret**: paste the key from Step 0
-- Click **Add secret**
-
-### Step 4 · Enable GitHub Pages
-
-Go to **Settings → Pages**:
-
-- **Source**: select **GitHub Actions** from the dropdown
-- ⚠️ Do NOT pick "Deploy from a branch"—this is the most common gotcha; choosing wrong leaves your site 404'ing
-
-No need to pick a branch—the workflow uploads its own artifact.
-
-### Step 5 · Trigger the first run
-
-Go to the **Actions** tab → pick **Octozine Daily** in the left sidebar → click the blue **Run workflow** button (top-right) → click **Run workflow** again to confirm.
-
----
-
-### 🎉 What success looks like
-
-In 3-4 minutes, the Action finishes and **a new commit lands on your main branch** (the `2026-W19` is the ISO week number for whichever week you ran):
-
-```
-data: issue 2026-W19 [skip ci]
-   - data/issues/2026-W19.json   this week's generated content
-   - config/profile.yaml         LLM-inferred profile from your starred repos
-```
-
-Then **your site is live at** `https://yourname.github.io/octozine/` (replace `yourname` with your GitHub username, e.g. `Autumn1337.github.io/octozine`).
-
-After this, the workflow runs every Monday at 09:00 UTC (change frequency/timezone in [docs/setup.md](./docs/setup.md)).
-
-**Action failed?** → See the 4 highest-frequency fixes in [Troubleshooting](#troubleshooting) below, or the full [docs/setup.md](./docs/setup.md).
-
----
-
-## Personalization: your interest profile
-
-The LLM reads your last 100 starred repos and writes `config/profile.yaml`, committing it back to main:
-
-```yaml
-# generated 2026-05-07 from yourname's starred repos
-themes:
-  - LLM tooling and inference engines
-  - Terminal UI / developer tools
-  - Rust systems programming
-languages: [rust, python, go, typescript]
-exclude_themes: [blockchain / web3]
-notes: |
-  Prefers low-level, performance-sensitive, developer-focused projects.
-```
-
-At rank time, the LLM scores each candidate against this profile. **Edit the file freely** — your edits stick across runs.
-Want to refresh the profile? Set `regenerate: true` in `config.yaml`; the next run rebuilds it and flips the flag back.
-
----
-
-## Switch LLM provider
-
-```yaml
-# config/config.yaml
+github_username: yourname
 llm:
   provider: deepseek
-  # model: deepseek-v4-pro    # ← optional; config.yaml has a ready-to-uncomment example for each provider
 ```
 
-| `provider:` | Default model | Sign-up | Current model list |
+Replace `yourname` with your GitHub username. Change `provider` to whichever provider your key belongs to. Commit the file directly to main.
+
+### 3. Add the secret
+
+In your fork, open:
+
+`Settings → Secrets and variables → Actions → New repository secret`
+
+- **Name**: `LLM_API_KEY`
+- **Secret**: paste your LLM API key
+
+Optionally add a `GH_TOKEN` secret to raise the GitHub API rate limit.
+
+### 4. Enable GitHub Pages
+
+Open:
+
+`Settings → Pages`
+
+- Set **Source** to **GitHub Actions**
+
+Do not choose “Deploy from a branch”. That is the most common cause of 404 or unstyled pages.
+
+### 5. Run once
+
+Open:
+
+`Actions → Octozine Daily → Run workflow`
+
+After 3-4 minutes, a new commit should land on main:
+
+```text
+data: issue 2026-W19 [skip ci]
+  data/issues/2026-W19.json
+  config/profile.yaml
+```
+
+Your site will be live at:
+
+```text
+https://yourname.github.io/octozine/
+```
+
+After that, it runs every Monday at 09:00 UTC. Change the schedule in [docs/setup.md](./docs/setup.md).
+
+---
+
+## What It Publishes
+
+Each issue picks 5 projects by default:
+
+- bilingual zh/en summaries
+- a Chinese “why this one” reason
+- matched profile themes / languages
+- source signals, such as Trending + HN
+- RSS feed
+- optional Telegram / Email push
+
+The core value is not listing projects. It is explaining why they belong in your feed.
+
+---
+
+## Personalization
+
+On first run, Octozine writes `config/profile.yaml`. This is a hand-editable v2 profile:
+
+```yaml
+version: 2
+core_themes:
+  - name: LLM tooling and inference engines
+    weight: 0.92
+    confidence: high
+    evidence:
+      - source: owned_repo
+        repo: yourname/inference-bench
+        note: Owned repo about local inference benchmarking.
+languages:
+  - name: rust
+    weight: 0.86
+    evidence_count: 14
+exclude_themes:
+  - name: blockchain / web3
+    confidence: medium
+    reason: Explicitly excluded or rarely appears in strong signals.
+```
+
+See the full schema in [config/profile.yaml.example](./config/profile.yaml.example).
+
+To give the generator explicit hints, edit `config/config.yaml`:
+
+```yaml
+profile:
+  regenerate: false
+  include: [rust cli, local inference]
+  exclude: [crypto, marketing automation]
+```
+
+To rebuild the profile, set `regenerate` to `true`. The next run rewrites the profile and flips it back to `false`.
+
+---
+
+## LLM Provider
+
+```yaml
+llm:
+  provider: deepseek
+  # model: deepseek-v4-pro
+```
+
+| `provider` | Default model | Sign-up | Model list |
 |---|---|---|---|
-| **`deepseek`** ⭐ | `deepseek-v4-flash` | [platform.deepseek.com](https://platform.deepseek.com) | [docs](https://api-docs.deepseek.com/quick_start/pricing) |
+| **`deepseek`** | `deepseek-v4-flash` | [platform.deepseek.com](https://platform.deepseek.com) | [docs](https://api-docs.deepseek.com/quick_start/pricing) |
 | `openai` | `gpt-5.4-mini` | [platform.openai.com](https://platform.openai.com) | [docs](https://platform.openai.com/docs/models) |
 | `moonshot` | `moonshot-v1-128k` | [platform.moonshot.cn](https://platform.moonshot.cn) | [docs](https://platform.kimi.com/docs/api/chat) |
 | `qwen` | `qwen-plus` | [bailian.console.aliyun.com](https://bailian.console.aliyun.com) | [docs](https://help.aliyun.com/zh/model-studio/getting-started/models) |
 | `zhipu` | `glm-4.5-air` | [open.bigmodel.cn](https://open.bigmodel.cn) | [docs](https://docs.bigmodel.cn/cn/guide/models/text/glm-4.7) |
 | `groq` | `llama-3.1-8b-instant` | [console.groq.com](https://console.groq.com) | [docs](https://console.groq.com/docs/models) |
-| `ollama` | `llama3.1` | local | — |
-| `custom` | — | any OpenAI-compatible endpoint; specify `base_url` + `model` | — |
+| `ollama` | `llama3.1` | local | - |
+| `custom` | - | any OpenAI-compatible endpoint | set `base_url` + `model` |
 
-⭐ DeepSeek is best price/quality and accessible from China — recommended default. Summary quality is not very model-sensitive, so the defaults are good enough.
-
-**Cost**: ~6 LLM calls per issue. Running weekly, DeepSeek < ¥5/year, OpenAI < $1/year.
-
-**Change model**: open `config/config.yaml` — every provider has a pre-written commented `# model:` example in the `llm:` block. Uncomment the line for your provider (only one allowed at a time).
+DeepSeek is the recommended default: cheap, fast enough, and good for summaries. Each issue uses roughly 7 LLM calls, so weekly runs are inexpensive.
 
 ---
 
-## Push channels
+## Push Channels
 
-Out of the box, **only GitHub Pages + RSS** is enabled (`/feed.xml` autogenerated).
+GitHub Pages and RSS are enabled by default:
+
+```text
+https://yourname.github.io/octozine/feed.xml
+```
 
 | Channel | Default | How to enable |
 |---|---|---|
-| GitHub Pages + RSS | always on | already enabled in the 5-minute flow |
-| Telegram bot | off | config `enabled: true` + `TELEGRAM_BOT_TOKEN` secret |
-| Email (SMTP) | off | config `enabled: true` + `SMTP_HOST/PORT/USER/PASS/FROM` secrets |
+| GitHub Pages | on | enabled in the quickstart |
+| RSS | on | autogenerated at `/feed.xml` |
+| Telegram | off | config + `TELEGRAM_BOT_TOKEN` secret |
+| Email | off | config + SMTP secrets |
 
-Full setup: [setup.md → push channels](./docs/setup.md#optional-push-channels-telegram--email--rss). Push runs as a separate Action step **after** the Pages deploy, so a misconfigured push channel never blocks site publication.
+See [docs/setup.md](./docs/setup.md) for full configuration.
 
 ---
 
 ## Troubleshooting
 
-**First run fails with `zero starred repos`** → `github_username` in `config.yaml` is still the placeholder `yourname`.
+**First run fails with `no usable GitHub signals`**
 
-**`LLM HTTP 401`** → `LLM_API_KEY` secret not set, or the key doesn't match the `provider:` you chose.
+`github_username` may still be `yourname`, or the account has no readable public repos / starred repos / public activity.
 
-**`only 1/3 fetchers survived`** → transient network; or GitHub API anonymous rate limit (60 req/h). Add a `GH_TOKEN` secret to lift it to 5000 req/h.
+**`LLM HTTP 401`**
 
-**Action green but site 404 / unstyled** → Settings → Pages → Source isn't set to GitHub Actions.
+`LLM_API_KEY` is missing, or it does not match the selected provider.
 
-More: [setup.md → Troubleshooting](./docs/setup.md#troubleshooting).
+**`only 1/3 fetchers survived`**
+
+Usually transient network trouble or GitHub’s anonymous API limit. Add `GH_TOKEN` to raise the limit from 60 req/h to 5000 req/h.
+
+**Actions succeeded, but the site is 404 / unstyled**
+
+GitHub Pages Source is not set to **GitHub Actions**.
+
+More troubleshooting: [docs/setup.md](./docs/setup.md).
 
 ---
 
-## Why not just use existing tools
+## Why Not Existing Tools
 
 | Tool | What it does | What Octozine does differently |
 |---|---|---|
-| `GitHubDaily` | Hand-curated Chinese README list | Fully automated + personalized + forkable |
-| `agents-radar` | Tracks a preset list of AI repos | Real trending discovery, no preset list |
-| `Horizon` | Aggregates HN / Reddit / Twitter | Focuses on GitHub trending + LLM personalization |
+| `GitHubDaily` | Hand-curated general project list | Fully automated + personalized + forkable |
+| `agents-radar` | Tracks a fixed AI repo list | Real discovery, no preset repo list |
+| `Horizon` | Aggregates HN / Reddit / Twitter | Focuses on GitHub projects + personal profile ranking |
 
-Those tools serve everyone the same content. Octozine **gives every fork a different output**.
+Those tools serve everyone the same content. Octozine gives every fork a different issue.
 
 ---
 
-## More
+## Development
 
-- **Design & architecture** → [docs/design.md](./docs/design.md) (19 sections covering data sources, LLM adapter, personalization, error handling, implementation order, decision log)
-- **Detailed setup** → [docs/setup.md](./docs/setup.md) (full troubleshooting + GH_TOKEN + push channel secrets)
-- **Local development** → `npm install && npm test`; running pipeline needs `LLM_API_KEY` env
+```bash
+npm install
+npm test
+npm run typecheck
+```
+
+Running the full pipeline requires `LLM_API_KEY`:
+
+```bash
+LLM_API_KEY=sk-... npm run pipeline
+```
+
+More:
+
+- [docs/setup.md](./docs/setup.md)
+- [docs/design.md](./docs/design.md)
+- [README.md](./README.md)
 
 ## License
 

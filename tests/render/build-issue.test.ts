@@ -2,13 +2,37 @@ import { describe, it, expect } from "vitest";
 import { buildIssue, slugForDate } from "../../src/render/build-issue.js";
 import type { SummarizedItem, Profile, Config } from "../../src/types.js";
 
-const profile: Profile = { themes: [], languages: [], excludeThemes: [], notes: "" };
+const profile: Profile = {
+  version: 2,
+  generatedFrom: {
+    username: "alice",
+    generatedAt: "2026-05-07",
+    signals: { ownedRepos: 0, starredRepos: 0, activityRepos: 0, readmes: 0 },
+  },
+  coreThemes: [{
+    name: "test",
+    weight: 0.5,
+    confidence: "low",
+    evidence: [{ source: "explicit", note: "test" }],
+  }],
+  secondaryThemes: [],
+  languages: [],
+  excludeThemes: [],
+  notes: "",
+};
 
 const cfg: Config = {
   schedule: "weekly",
   languages: ["zh", "en"],
   githubUsername: "alice",
-  profile: { regenerate: false },
+  profile: {
+    regenerate: false,
+    include: [],
+    exclude: [],
+    readmeRepos: 8,
+    starredLimit: 150,
+    activityLimit: 50,
+  },
   llm: { baseUrl: "https://x", model: "m" },
   sources: { trending: { enabled: true, langs: [], window: "weekly" } },
   outputs: { pages: { enabled: true } },
@@ -24,6 +48,8 @@ function mk(repo: string, sources: SummarizedItem["sources"]): SummarizedItem {
     url: `https://github.com/x/${repo}`,
     sources, sourceMeta: {},
     score: 90, reason: "r",
+    matchedThemes: [],
+    matchedLanguages: [],
     summary: { zh: "z", en: "e" },
   };
 }

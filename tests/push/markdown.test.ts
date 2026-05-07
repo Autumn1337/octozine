@@ -19,6 +19,8 @@ const fixture: IssueData = {
     sourceMeta: {},
     score: 95,
     reason: "Rust + TUI 命中.",
+    matchedThemes: ["终端 TUI"],
+    matchedLanguages: ["rust"],
     summary: { zh: "Ratatui 是…", en: "Ratatui is…" },
   },
   items: [{
@@ -31,11 +33,30 @@ const fixture: IssueData = {
     sourceMeta: {},
     score: 80,
     reason: "底层.",
+    matchedThemes: ["Rust 系统编程"],
+    matchedLanguages: ["rust"],
     summary: { zh: "Rust 是…", en: "Rust is…" },
   }],
   meta: {
     config: { schedule: "weekly", languages: ["zh", "en"] },
-    profile: { themes: [], languages: [], excludeThemes: [], notes: "" },
+    profile: {
+      version: 2,
+      generatedFrom: {
+        username: "alice",
+        generatedAt: "2026-05-07",
+        signals: { ownedRepos: 0, starredRepos: 0, activityRepos: 0, readmes: 0 },
+      },
+      coreThemes: [{
+        name: "Rust 系统编程",
+        weight: 0.9,
+        confidence: "high",
+        evidence: [{ source: "explicit", note: "test" }],
+      }],
+      secondaryThemes: [],
+      languages: [{ name: "rust", weight: 0.9, evidenceCount: 2 }],
+      excludeThemes: [],
+      notes: "",
+    },
     sourceCounts: { trending: 2 },
   },
 };

@@ -93,16 +93,41 @@ history_window: 4
 });
 
 describe("parseProfile", () => {
-  it("accepts a minimal profile", () => {
+  it("accepts a v2 profile", () => {
     const yaml = `
-themes: ["LLM tooling"]
-languages: [rust]
-exclude_themes: ["web3"]
+version: 2
+generated_from:
+  username: alice
+  generated_at: 2026-05-07
+  signals:
+    owned_repos: 1
+    starred_repos: 2
+    activity_repos: 1
+    readmes: 1
+core_themes:
+  - name: LLM inference tooling
+    weight: 0.9
+    confidence: high
+    evidence:
+      - source: owned_repo
+        repo: alice/infer
+        note: owned repo
+secondary_themes: []
+languages:
+  - name: rust
+    weight: 0.8
+    evidence_count: 2
+exclude_themes:
+  - name: web3
+    confidence: medium
+    reason: explicit exclude
 notes: |
   prefers low-level work
 `;
     const p = parseProfile(yaml);
-    expect(p.themes).toEqual(["LLM tooling"]);
+    expect(p.version).toBe(2);
+    expect(p.coreThemes[0]!.name).toBe("LLM inference tooling");
+    expect(p.languages[0]!.name).toBe("rust");
     expect(p.notes.trim()).toBe("prefers low-level work");
   });
 });

@@ -1,12 +1,58 @@
-# Hand-edit freely. M6 will add auto-generation from your starred repos.
-themes:
-  - "LLM tooling and inference engines"
-  - "Terminal UI / developer tools"
-  - "Rust systems programming"
-languages: [rust, python, go, typescript]
+# Hand-edit freely. Octozine generates this v2 profile from multiple GitHub signals:
+# profile metadata, owned repos, public activity, starred repos, and README excerpts.
+version: 2
+generated_from:
+  username: yourname
+  generated_at: 2026-05-07
+  signals:
+    owned_repos: 12
+    starred_repos: 100
+    activity_repos: 8
+    readmes: 8
+
+core_themes:
+  - name: "LLM tooling and inference engines"
+    weight: 0.92
+    confidence: high
+    evidence:
+      - source: owned_repo
+        repo: yourname/inference-bench
+        note: "Owned repo about local inference benchmarking."
+      - source: starred_repo
+        repo: vllm-project/vllm
+        note: "Starred high-signal inference engine."
+  - name: "Terminal developer tools"
+    weight: 0.78
+    confidence: medium
+    evidence:
+      - source: starred_repo
+        repo: charmbracelet/bubbletea
+        note: "Repeated TUI/devtool signal."
+
+secondary_themes:
+  - name: "Rust systems programming"
+    weight: 0.68
+    confidence: medium
+    evidence:
+      - source: readme
+        repo: yourname/rust-tool
+        note: "README describes low-level CLI tooling."
+
+languages:
+  - name: rust
+    weight: 0.86
+    evidence_count: 14
+  - name: typescript
+    weight: 0.62
+    evidence_count: 10
+
 exclude_themes:
-  - "blockchain / web3"
-  - "marketing / SEO tools"
+  - name: "blockchain / web3"
+    confidence: medium
+    reason: "Explicitly excluded or rarely appears in strong signals."
+  - name: "marketing / SEO tools"
+    confidence: medium
+    reason: "No owned/activity evidence and low relevance to stated interests."
+
 notes: |
-  Prefers low-level, performance-sensitive, developer-focused projects.
-  Not interested in SaaS or marketing tooling.
+  Prefers practical developer infrastructure, local-first tools, and performance-sensitive systems.

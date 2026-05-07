@@ -4,9 +4,26 @@ import { rankCandidates } from "../../src/pipeline/rank.js";
 import type { Candidate, Profile } from "../../src/types.js";
 
 const profile: Profile = {
-  themes: ["Rust 系统编程", "终端 TUI"],
-  languages: ["rust"],
-  excludeThemes: ["前端 UI 框架"],
+  version: 2,
+  generatedFrom: {
+    username: "alice",
+    generatedAt: "2026-05-07",
+    signals: { ownedRepos: 1, starredRepos: 2, activityRepos: 0, readmes: 1 },
+  },
+  coreThemes: [{
+    name: "Rust 系统编程",
+    weight: 0.9,
+    confidence: "high",
+    evidence: [{ source: "owned_repo", repo: "alice/rust-tool", note: "owned Rust repo" }],
+  }],
+  secondaryThemes: [{
+    name: "终端 TUI",
+    weight: 0.7,
+    confidence: "medium",
+    evidence: [{ source: "starred_repo", repo: "ratatui-org/ratatui", note: "starred TUI repo" }],
+  }],
+  languages: [{ name: "rust", weight: 0.9, evidenceCount: 3 }],
+  excludeThemes: [{ name: "前端 UI 框架", confidence: "medium", reason: "low signal" }],
   notes: "low-level, performance",
 };
 
@@ -31,6 +48,8 @@ describe("rankCandidates", () => {
     expect(out[0]!.owner).toBe("rust-lang");
     expect(out[0]!.score).toBe(92);
     expect(out[0]!.reason).toContain("Rust");
+    expect(out[0]!.matchedThemes).toEqual(["Rust 系统编程"]);
+    expect(out[0]!.matchedLanguages).toEqual(["rust"]);
     expect(out[1]!.owner).toBe("ratatui-org");
     expect(out[1]!.score).toBe(85);
   });
@@ -41,12 +60,13 @@ describe("rankCandidates", () => {
   });
 
   it("rejects when every LLM-supplied index is invalid", async () => {
-    // LLM hallucinates: indices that are out-of-bounds, negative, or non-integer
+    // LLM hallucinates: integer indices that pass zod schema but fail runtime
+    // bounds-check (out-of-range or negative; candidates.length === 3).
     const badRanking = JSON.stringify({
       ranking: [
-        { i: 99, score: 95, reason: "x" },
-        { i: -1, score: 90, reason: "y" },
-        { i: 1.5, score: 85, reason: "z" },
+        { i: 99,  score: 95, reason: "x", matched_themes: [], matched_languages: [] },
+        { i: -1,  score: 90, reason: "y", matched_themes: [], matched_languages: [] },
+        { i: 100, score: 85, reason: "z", matched_themes: [], matched_languages: [] },
       ],
     });
     globalThis.fetch = (async () => new Response(JSON.stringify({
@@ -61,19 +81,16 @@ describe("rankCandidates", () => {
     // LLM returns the same index twice — only one slot should be filled
     const dupRanking = JSON.stringify({
       ranking: [
-        { i: 0, score: 95, reason: "first" },
-        { i: 0, score: 90, reason: "duplicate of i=0" },
-        { i: 2, score: 80, reason: "third" },
+        { i: 0, score: 95, reason: "first", matched_themes: ["Rust 系统编程"], matched_languages: ["rust"] },
+        { i: 0, score: 90, reason: "duplicate of i=0", matched_themes: ["Rust 系统编程"], matched_languages: ["rust"] },
+        { i: 2, score: 80, reason: "third", matched_themes: ["终端 TUI"], matched_languages: ["rust"] },
       ],
     });
     globalThis.fetch = (async () => new Response(JSON.stringify({
       choices: [{ message: { content: dupRanking } }],
     }))) as typeof fetch;
-    const out = await rankCandidates(candidates, profile, 5, {
+    await expect(rankCandidates(candidates, profile, 5, {
       baseUrl: "https://x", apiKey: "k", model: "m",
-    });
-    expect(out).toHaveLength(2);
-    expect(out[0]!.owner).toBe("rust-lang");
-    expect(out[1]!.owner).toBe("ratatui-org");
+    })).rejects.toThrow(/only 2\/3 valid ranked items/);
   });
 });

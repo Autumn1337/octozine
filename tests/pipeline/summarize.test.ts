@@ -15,6 +15,8 @@ const item: RankedCandidate = {
   language: "rust",
   score: 90,
   reason: "Rust TUI",
+  matchedThemes: ["终端 TUI"],
+  matchedLanguages: ["rust"],
 };
 
 afterEach(() => { vi.restoreAllMocks(); });

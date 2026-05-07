@@ -3,7 +3,7 @@
 <p align="center">
   <em>A folio of GitHub, curated weekly.</em>
   <br>
-  自部署、AI 增强的 GitHub 项目发现工具 · Fork 一下,每周一份<strong>只为你定制</strong>的项目周刊
+  Fork 一下,自动生成<strong>只属于你的</strong> GitHub 项目周刊。
 </p>
 
 <p align="center">
@@ -23,189 +23,263 @@
 </p>
 
 <p align="center">
-  <a href="https://autumn1337.github.io/octozine/">▶&nbsp;Live&nbsp;demo</a>
-  &nbsp;·&nbsp;
-  <a href="#5-分钟跑起来">⚡&nbsp;5&nbsp;分钟跑起来</a>
-  &nbsp;·&nbsp;
-  <a href="./docs/design.md">📐&nbsp;Design</a>
-  &nbsp;·&nbsp;
-  <a href="./docs/setup.md">🔧&nbsp;Setup</a>
+  <a href="https://autumn1337.github.io/octozine/">Live demo</a>
+  ·
+  <a href="#5-分钟跑起来">5 分钟跑起来</a>
+  ·
+  <a href="./docs/setup.md">Setup</a>
+  ·
+  <a href="./docs/design.md">Design</a>
 </p>
 
 ---
 
-## 它是什么
+## 不是普通 Trending
 
-每周一,Octozine 在你 fork 的 repo 里跑一遍 GitHub Actions:
+普通 GitHub Trending 给所有人同一份榜单。Octozine 会读取你的 GitHub 信号:
 
-1. **抓** ~150 个候选项目(GitHub Trending / Search API / Hacker News)
-2. **排** LLM 按你的兴趣画像精选 top 5
-3. **写** 每个项目一段中英摘要 + 一句中文"为什么推它"
-4. **发** 部署成杂志风的 GitHub Pages 站,可选推到 Telegram / Email / RSS
+- profile / bio
+- 自己维护的 public repos
+- 最近 public activity
+- starred repos
+- 代表性 README 摘要
 
-兴趣画像由 LLM 读你的 starred repos 推断 —— **每个 fork 的产出都不一样**。
+然后每周从 GitHub Trending、Search API、Hacker News 等来源里挑出最适合你的项目,生成带解释的杂志页。
 
-![list](https://raw.githubusercontent.com/Autumn1337/octozine/main/docs/images/list.png)
+```text
+Your GitHub signals
+profile · owned repos · activity · stars · README
+        ↓
+Discovery sources
+Trending · Search · HN · Events
+        ↓
+LLM curator
+rank · explain · summarize
+        ↓
+Your weekly zine
+GitHub Pages · RSS · Telegram · Email
+```
+
+每个 fork 都会生成不同内容。你看到的不是“今天大家在看什么”,而是“这些项目为什么适合你”。
 
 ---
 
 ## 5 分钟跑起来
 
-> **开始前**:去 [DeepSeek](https://platform.deepseek.com)(或 [其他任意一家](#切换-llm-provider))注册并拿一个 LLM API key——会是一个 `sk-...` 之类的字符串,后面 Step 3 要用。
+开始前先准备一个 OpenAI 兼容协议的 LLM API key。推荐用 [DeepSeek](https://platform.deepseek.com),也可以用 OpenAI、Qwen、Moonshot、Zhipu、Groq、Ollama 或自定义 endpoint。
 
-下面 5 步**全部在 GitHub 网页上完成**,不需要 git clone 到本地。
+下面步骤都在 GitHub 网页完成,不需要 clone 到本地。
 
-### Step 1 · Fork
+### 1. Fork
 
-点 [👉 Fork this repo 👈](https://github.com/Autumn1337/octozine/fork)。Fork 完成后你会得到 `https://github.com/yourname/octozine`(`yourname` 即你的 GitHub username),**之后所有 Step 都在你这个 fork 里操作**。
+点 [Fork this repo](https://github.com/Autumn1337/octozine/fork)。之后所有操作都在你的 fork 里完成。
 
-### Step 2 · 改 `config/config.yaml` 这两行
+### 2. 改两行配置
 
-在你 fork 的页面点开 `config/config.yaml`,右上角的 ✏️ 铅笔图标进入编辑,改这两个值:
-
-```yaml
-github_username: yourname            # ← 替换成你的 GitHub username,例:Autumn1337(不带引号、不带尖括号)
-llm:
-  provider: deepseek                 # ← 改成你拿了 key 的那家(deepseek / openai / qwen / ...)
-```
-
-页面底部 **Commit changes** 直接 commit 到 main 即可。
-
-### Step 3 · 把 LLM key 加到 secrets
-
-去你 fork 的 **Settings → Secrets and variables → Actions → New repository secret**:
-
-- **Name**: `LLM_API_KEY`(必须是这个名字)
-- **Secret**: 粘贴你 Step 0 拿到的 key
-- 点 **Add secret**
-
-### Step 4 · 启用 GitHub Pages
-
-去 **Settings → Pages**:
-
-- **Source**: 下拉选 **GitHub Actions**
-- ⚠️ 别选成 "Deploy from a branch"——这是新手最容易踩的坑,选错站点会 404
-
-不用挑 branch,workflow 会自己上传 artifact。
-
-### Step 5 · 跑一次
-
-去 **Actions** tab → 左侧选 **Octozine Daily** → 右上角点 **Run workflow** 蓝色按钮 → 弹出来再点一次 **Run workflow** 确认。
-
----
-
-### 🎉 完成后你会看到
-
-3-4 分钟内,Action 跑完,**你的 main 分支上多 1 个 commit**(`2026-W19` 是 ISO 周编号,以当周为准):
-
-```
-data: issue 2026-W19 [skip ci]
-   - data/issues/2026-W19.json   本周生成的内容
-   - config/profile.yaml         LLM 从你 starred 推断的画像
-```
-
-然后 **你的站点 live 在** `https://yourname.github.io/octozine/`(把 `yourname` 换成你的 GitHub username,例:`Autumn1337.github.io/octozine`)。
-
-之后每周一 09:00 UTC 自动跑一次(改频率/时区见 [docs/setup.md](./docs/setup.md))。
-
-**Action 挂了?** → 翻下方 [常见问题](#常见问题) 4 个最高频排错,或完整版 [docs/setup.md](./docs/setup.md)。
-
----
-
-## 个性化:你的兴趣画像
-
-LLM 读你最近 100 个 starred,自动生成 `config/profile.yaml` 并 commit 回 main:
+打开 `config/config.yaml`,点右上角铅笔编辑:
 
 ```yaml
-# generated 2026-05-07 from yourname's starred repos
-themes:
-  - LLM tooling and inference engines
-  - Terminal UI / developer tools
-  - Rust systems programming
-languages: [rust, python, go, typescript]
-exclude_themes: [blockchain / web3]
-notes: |
-  Prefers low-level, performance-sensitive, developer-focused projects.
-```
-
-精排时 LLM 拿这份画像和候选对比打分。**文件可以随时手编**,下次跑就用你编辑后的版本。
-想刷新? `config.yaml` 改 `regenerate: true`,下次跑后自动翻回 false。
-
----
-
-## 切换 LLM Provider
-
-```yaml
-# config/config.yaml
+github_username: yourname
 llm:
   provider: deepseek
-  # model: deepseek-v4-pro    # ← 可选;config.yaml 里每家都有现成的注释例子
 ```
 
-| `provider:` | 默认模型 | 注册地址 | 当前 model 列表 |
+把 `yourname` 换成你的 GitHub username,把 `provider` 换成你拿到 key 的那家。页面底部直接 **Commit changes** 到 main。
+
+### 3. 添加 secret
+
+进入你的 fork:
+
+`Settings → Secrets and variables → Actions → New repository secret`
+
+- **Name**: `LLM_API_KEY`
+- **Secret**: 粘贴你的 LLM API key
+
+如果你想提高 GitHub API rate limit,可以额外加 `GH_TOKEN` secret。
+
+### 4. 启用 GitHub Pages
+
+进入:
+
+`Settings → Pages`
+
+- **Source** 选择 **GitHub Actions**
+
+不要选 "Deploy from a branch",否则站点通常会 404 或样式异常。
+
+### 5. 手动跑一次
+
+进入:
+
+`Actions → Octozine Daily → Run workflow`
+
+3-4 分钟后,main 分支会多一个 commit:
+
+```text
+data: issue 2026-W19 [skip ci]
+  data/issues/2026-W19.json
+  config/profile.yaml
+```
+
+站点地址:
+
+```text
+https://yourname.github.io/octozine/
+```
+
+之后默认每周一 09:00 UTC 自动运行。改频率见 [docs/setup.md](./docs/setup.md)。
+
+---
+
+## 它生成什么
+
+每期默认精选 5 个项目:
+
+- 中英双语摘要
+- 中文“为什么推它”
+- 命中的 profile theme / language
+- 来源信号,例如 Trending + HN
+- RSS feed
+- 可选 Telegram / Email 推送
+
+核心不是把项目列出来,而是解释它为什么出现在你的周刊里。
+
+---
+
+## 个性化画像
+
+第一次运行时,Octozine 会生成 `config/profile.yaml`。这是一个可手编的 v2 profile:
+
+```yaml
+version: 2
+core_themes:
+  - name: LLM tooling and inference engines
+    weight: 0.92
+    confidence: high
+    evidence:
+      - source: owned_repo
+        repo: yourname/inference-bench
+        note: Owned repo about local inference benchmarking.
+languages:
+  - name: rust
+    weight: 0.86
+    evidence_count: 14
+exclude_themes:
+  - name: blockchain / web3
+    confidence: medium
+    reason: Explicitly excluded or rarely appears in strong signals.
+```
+
+完整结构见 [config/profile.yaml.example](./config/profile.yaml.example)。
+
+想明确告诉它你的偏好,可以改 `config/config.yaml`:
+
+```yaml
+profile:
+  regenerate: false
+  include: [rust cli, local inference]
+  exclude: [crypto, marketing automation]
+```
+
+想重建画像,把 `regenerate` 改成 `true`,下次运行后会自动翻回 `false`。
+
+---
+
+## LLM Provider
+
+```yaml
+llm:
+  provider: deepseek
+  # model: deepseek-v4-pro
+```
+
+| `provider` | 默认模型 | 注册地址 | 模型列表 |
 |---|---|---|---|
-| **`deepseek`** ⭐ | `deepseek-v4-flash` | [platform.deepseek.com](https://platform.deepseek.com) | [docs](https://api-docs.deepseek.com/quick_start/pricing) |
+| **`deepseek`** | `deepseek-v4-flash` | [platform.deepseek.com](https://platform.deepseek.com) | [docs](https://api-docs.deepseek.com/quick_start/pricing) |
 | `openai` | `gpt-5.4-mini` | [platform.openai.com](https://platform.openai.com) | [docs](https://platform.openai.com/docs/models) |
 | `moonshot` | `moonshot-v1-128k` | [platform.moonshot.cn](https://platform.moonshot.cn) | [docs](https://platform.kimi.com/docs/api/chat) |
 | `qwen` | `qwen-plus` | [bailian.console.aliyun.com](https://bailian.console.aliyun.com) | [docs](https://help.aliyun.com/zh/model-studio/getting-started/models) |
 | `zhipu` | `glm-4.5-air` | [open.bigmodel.cn](https://open.bigmodel.cn) | [docs](https://docs.bigmodel.cn/cn/guide/models/text/glm-4.7) |
 | `groq` | `llama-3.1-8b-instant` | [console.groq.com](https://console.groq.com) | [docs](https://console.groq.com/docs/models) |
-| `ollama` | `llama3.1` | 本地 | — |
-| `custom` | — | 任何 OpenAI 兼容 endpoint,自填 `base_url` + `model` | — |
+| `ollama` | `llama3.1` | 本地 | - |
+| `custom` | - | 任何 OpenAI 兼容 endpoint | 自填 `base_url` + `model` |
 
-⭐ DeepSeek 性价比最高 + 国内可直连,作为推荐默认。摘要质量对 model 不敏感,默认这档够用。
-
-**成本**:每期约 6 次 LLM 调用。按周跑,DeepSeek 一年 < ¥5,OpenAI 一年 < $1。
-
-**换 model**: 打开 `config/config.yaml`,`llm:` 块下每家 provider 都有一行 `# model:` 例子,取消对应那行的注释即可(只能取消一行)。
+DeepSeek 是默认推荐,便宜、速度够用。每期大约 7 次 LLM 调用,按周运行成本很低。
 
 ---
 
 ## 推送渠道
 
-默认只发 **GitHub Pages + RSS**(`/feed.xml` 自动生成)。
+默认发布到 GitHub Pages,并生成 RSS:
+
+```text
+https://yourname.github.io/octozine/feed.xml
+```
 
 | 渠道 | 默认 | 启用方式 |
 |---|---|---|
-| GitHub Pages + RSS | 永远开 | 已经在 5 分钟流程里启用 |
-| Telegram bot | 关 | config 加 `enabled: true` + `TELEGRAM_BOT_TOKEN` secret |
-| Email (SMTP) | 关 | config 加 `enabled: true` + `SMTP_HOST/PORT/USER/PASS/FROM` secrets |
+| GitHub Pages | 开 | 5 分钟流程已启用 |
+| RSS | 开 | 自动生成 `/feed.xml` |
+| Telegram | 关 | config 开启 + `TELEGRAM_BOT_TOKEN` secret |
+| Email | 关 | config 开启 + SMTP secrets |
 
-完整配置见 [setup.md → 推送渠道](./docs/setup.md#optional-push-channels-telegram--email--rss)。推送是独立 Action step 在 Pages 部署**之后**跑,挂了不影响站点发布。
+完整配置见 [docs/setup.md](./docs/setup.md)。
 
 ---
 
 ## 常见问题
 
-**第一次跑挂,日志写 `zero starred repos`** → `config.yaml` 里 `github_username` 还是默认值 `yourname`。
+**第一次运行失败,日志里有 `no usable GitHub signals`**
 
-**`LLM HTTP 401`** → secret `LLM_API_KEY` 没设,或 key 不属于 `provider:` 那家。
+`github_username` 可能还是 `yourname`,或这个账号没有可读的 public repos / starred repos / activity。
 
-**`only 1/3 fetchers survived`** → 临时网络问题重跑;或 GitHub API 匿名速率限制 60 req/h(加 `GH_TOKEN` secret 提到 5000)。
+**`LLM HTTP 401`**
 
-**Actions 绿,但站点 404 / 没样式** → Settings → Pages → Source 没选 GitHub Actions。
+`LLM_API_KEY` 没设,或 key 不属于当前 `provider`。
 
-更多见 [setup.md → Troubleshooting](./docs/setup.md#troubleshooting)。
+**`only 1/3 fetchers survived`**
+
+通常是临时网络或 GitHub API rate limit。加 `GH_TOKEN` secret 可以把匿名 60 req/h 提高到 5000 req/h。
+
+**Actions 成功,但页面 404 / 没样式**
+
+GitHub Pages 的 Source 没选 **GitHub Actions**。
+
+更多排错见 [docs/setup.md](./docs/setup.md)。
 
 ---
 
-## 为什么不用现成的工具
+## 为什么不用现成工具
 
 | 工具 | 它做什么 | Octozine 不一样 |
 |---|---|---|
-| `GitHubDaily` | 人工运营,中文 README 大杂烩 | 全自动 + 个性化 + 可 fork |
-| `agents-radar` | 跟踪固定的 AI repo 列表 | 真 trending,不预设 repo |
-| `Horizon` | 抓 HN / Reddit / Twitter | 重点抓 GitHub trending + LLM 个性化 rank |
+| `GitHubDaily` | 人工运营的通用项目列表 | 全自动 + 个性化 + 可 fork |
+| `agents-radar` | 跟踪固定 AI repo 列表 | 真 discovery,不预设 repo |
+| `Horizon` | 聚合 HN / Reddit / Twitter | 重点是 GitHub 项目 + 个人画像排序 |
 
-别人是给所有人看同一份内容,Octozine **每个 fork 都不一样**。
+别人给所有人看同一份内容。Octozine 让每个 fork 都不一样。
 
 ---
 
-## 进一步
+## 开发
 
-- **设计和架构** → [docs/design.md](./docs/design.md)(19 节,含数据源、LLM 适配、个性化机制、错误处理、实现顺序、决策记录)
-- **详细 setup** → [docs/setup.md](./docs/setup.md)(完整 troubleshooting + GH_TOKEN + 推送 secrets)
-- **本地开发** → `npm install && npm test`,跑 pipeline 要 `LLM_API_KEY` env
+```bash
+npm install
+npm test
+npm run typecheck
+```
+
+运行完整 pipeline 需要 `LLM_API_KEY`:
+
+```bash
+LLM_API_KEY=sk-... npm run pipeline
+```
+
+更多:
+
+- [docs/setup.md](./docs/setup.md)
+- [docs/design.md](./docs/design.md)
+- [README_EN.md](./README_EN.md)
 
 ## License
 

@@ -25,8 +25,35 @@ history_window: 4
 `;
 
 const profileYaml = `
-themes: [Rust 系统编程]
-languages: [rust]
+version: 2
+generated_from:
+  username: alice
+  generated_at: 2026-05-04
+  signals:
+    owned_repos: 1
+    starred_repos: 2
+    activity_repos: 0
+    readmes: 1
+core_themes:
+  - name: Rust 系统编程
+    weight: 0.9
+    confidence: high
+    evidence:
+      - source: owned_repo
+        repo: alice/rust-tool
+        note: owned Rust repo
+secondary_themes:
+  - name: 终端 TUI
+    weight: 0.7
+    confidence: medium
+    evidence:
+      - source: starred_repo
+        repo: ratatui-org/ratatui
+        note: starred TUI repo
+languages:
+  - name: rust
+    weight: 0.9
+    evidence_count: 2
 exclude_themes: []
 notes: low-level
 `;
@@ -51,8 +78,8 @@ const trendingHtml = `
 
 const rankFixture = JSON.stringify({
   ranking: [
-    { i: 1, score: 95, reason: "Ratatui 命中 Rust + TUI." },
-    { i: 0, score: 80, reason: "Rust 本身相关." },
+    { i: 1, score: 95, reason: "Ratatui 命中 Rust + TUI.", matched_themes: ["终端 TUI"], matched_languages: ["rust"] },
+    { i: 0, score: 80, reason: "Rust 本身相关.", matched_themes: ["Rust 系统编程"], matched_languages: ["rust"] },
   ],
 });
 const summaryFixture = JSON.stringify({ zh: "zh摘要", en: "en summary" });
@@ -143,8 +170,8 @@ describe("runPipeline E2E", () => {
 
     const newRankFixture = JSON.stringify({
       ranking: [
-        { i: 0, score: 92, reason: "ratatui 命中 Rust + TUI." },
-        { i: 1, score: 88, reason: "bubbletea 是 Go TUI 但接近主题." },
+        { i: 0, score: 92, reason: "ratatui 命中 Rust + TUI.", matched_themes: ["终端 TUI"], matched_languages: ["rust"] },
+        { i: 1, score: 88, reason: "bubbletea 是 Go TUI 但接近主题.", matched_themes: ["终端 TUI"], matched_languages: [] },
       ],
     });
 
@@ -187,24 +214,45 @@ describe("runPipeline E2E", () => {
     // Note: NO profile.yaml is written
 
     const generatedProfile = JSON.stringify({
-      themes: ["LLM tooling and inference"],
-      languages: ["rust"],
+      version: 2,
+      core_themes: [{
+        name: "LLM tooling and inference",
+        weight: 0.9,
+        confidence: "high",
+        evidence: [{ source: "owned_repo", repo: "alice/infer", note: "owned inference repo" }],
+      }],
+      secondary_themes: [],
+      languages: [{ name: "rust", weight: 0.8, evidence_count: 1 }],
       exclude_themes: [],
-      notes: "Auto-generated from starred.",
+      notes: "Auto-generated from GitHub signals.",
     });
 
     let llmCalls = 0;
     const fetchMock = vi.fn(async (url: string | URL): Promise<Response> => {
       const u = String(url);
+      if (u.match(/api\.github\.com\/users\/alice$/)) {
+        return new Response(JSON.stringify({ login: "alice", bio: "LLM tools" }));
+      }
+      if (u.includes("api.github.com/users/alice/repos")) {
+        return new Response(JSON.stringify([
+          { full_name: "alice/infer", description: "Local inference", topics: ["llm"], language: "Rust", stargazers_count: 1, fork: false, archived: false },
+        ]));
+      }
       if (u.includes("api.github.com/users/") && u.includes("/starred")) {
         return new Response(JSON.stringify([
-          { full_name: "rust-lang/rust", description: "x", topics: ["rust"], language: "Rust" },
+          { full_name: "rust-lang/rust", description: "x", topics: ["rust"], language: "Rust", stargazers_count: 1, fork: false, archived: false },
         ]));
+      }
+      if (u.includes("api.github.com/users/alice/events/public")) {
+        return new Response(JSON.stringify([]));
+      }
+      if (u.includes("api.github.com/repos/alice/infer/readme")) {
+        return new Response(JSON.stringify({ encoding: "base64", content: Buffer.from("Local inference README").toString("base64") }));
       }
       if (u.includes("github.com/trending")) return new Response(trendingHtml);
       if (u.endsWith("/chat/completions")) {
         const idx = llmCalls++;
-        const content = idx === 0 ? generatedProfile : (idx === 1 ? rankFixture : summaryFixture);
+        const content = idx <= 1 ? generatedProfile : (idx === 2 ? rankFixture : summaryFixture);
         return new Response(JSON.stringify({ choices: [{ message: { content } }] }));
       }
       throw new Error(`unexpected fetch ${u}`);
@@ -234,8 +282,15 @@ describe("runPipeline E2E", () => {
     await fs.writeFile(path.join(tmpRoot, "config/profile.yaml"), profileYaml);
 
     const generatedProfile = JSON.stringify({
-      themes: ["LLM tooling and inference"],
-      languages: ["rust"],
+      version: 2,
+      core_themes: [{
+        name: "LLM tooling and inference",
+        weight: 0.9,
+        confidence: "high",
+        evidence: [{ source: "owned_repo", repo: "alice/infer", note: "owned inference repo" }],
+      }],
+      secondary_themes: [],
+      languages: [{ name: "rust", weight: 0.8, evidence_count: 1 }],
       exclude_themes: [],
       notes: "Auto-generated test profile.",
     });
@@ -243,16 +298,30 @@ describe("runPipeline E2E", () => {
     let llmCalls = 0;
     const fetchMock = vi.fn(async (url: string | URL): Promise<Response> => {
       const u = String(url);
+      if (u.match(/api\.github\.com\/users\/alice$/)) {
+        return new Response(JSON.stringify({ login: "alice", bio: "LLM tools" }));
+      }
+      if (u.includes("api.github.com/users/alice/repos")) {
+        return new Response(JSON.stringify([
+          { full_name: "alice/infer", description: "Local inference", topics: ["llm"], language: "Rust", stargazers_count: 1, fork: false, archived: false },
+        ]));
+      }
       if (u.includes("api.github.com/users/") && u.includes("/starred")) {
         return new Response(JSON.stringify([
-          { full_name: "rust-lang/rust", description: "x", topics: ["rust"], language: "Rust" },
-          { full_name: "tokio-rs/tokio", description: "y", topics: ["async"], language: "Rust" },
+          { full_name: "rust-lang/rust", description: "x", topics: ["rust"], language: "Rust", stargazers_count: 1, fork: false, archived: false },
+          { full_name: "tokio-rs/tokio", description: "y", topics: ["async"], language: "Rust", stargazers_count: 1, fork: false, archived: false },
         ]));
+      }
+      if (u.includes("api.github.com/users/alice/events/public")) {
+        return new Response(JSON.stringify([]));
+      }
+      if (u.includes("api.github.com/repos/alice/infer/readme")) {
+        return new Response(JSON.stringify({ encoding: "base64", content: Buffer.from("Local inference README").toString("base64") }));
       }
       if (u.includes("github.com/trending")) return new Response(trendingHtml);
       if (u.endsWith("/chat/completions")) {
         const idx = llmCalls++;
-        const content = idx === 0 ? generatedProfile : (idx === 1 ? rankFixture : summaryFixture);
+        const content = idx <= 1 ? generatedProfile : (idx === 2 ? rankFixture : summaryFixture);
         return new Response(JSON.stringify({ choices: [{ message: { content } }] }));
       }
       throw new Error(`unexpected fetch ${u}`);

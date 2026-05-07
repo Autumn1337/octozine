@@ -16,6 +16,8 @@ export type Candidate = {
 export type RankedCandidate = Candidate & {
   score: number;   // 0-100
   reason: string;  // single zh sentence explaining why it ranks here
+  matchedThemes: string[];
+  matchedLanguages: string[];
 };
 
 export type Summary = { zh: string; en: string };
@@ -24,10 +26,47 @@ export type SummarizedItem = RankedCandidate & {
   summary: Summary;
 };
 
+export type ProfileEvidence = {
+  source: "explicit" | "profile" | "owned_repo" | "activity_repo" | "starred_repo" | "readme";
+  repo?: string;
+  note: string;
+};
+
+export type ProfileTheme = {
+  name: string;
+  weight: number;
+  confidence: "low" | "medium" | "high";
+  evidence: ProfileEvidence[];
+};
+
+export type ProfileLanguage = {
+  name: string;
+  weight: number;
+  evidenceCount: number;
+};
+
+export type ProfileExcludeTheme = {
+  name: string;
+  confidence: "low" | "medium" | "high";
+  reason: string;
+};
+
 export type Profile = {
-  themes: string[];
-  languages: string[];
-  excludeThemes: string[];
+  version: 2;
+  generatedFrom: {
+    username: string;
+    generatedAt: string;
+    signals: {
+      ownedRepos: number;
+      starredRepos: number;
+      activityRepos: number;
+      readmes: number;
+    };
+  };
+  coreThemes: ProfileTheme[];
+  secondaryThemes: ProfileTheme[];
+  languages: ProfileLanguage[];
+  excludeThemes: ProfileExcludeTheme[];
   notes: string;
 };
 
@@ -35,7 +74,14 @@ export type Config = {
   schedule: string;            // "weekly" | "daily" | cron expression
   languages: ("zh" | "en")[];
   githubUsername: string;
-  profile: { regenerate: boolean };
+  profile: {
+    regenerate: boolean;
+    include: string[];
+    exclude: string[];
+    readmeRepos: number;
+    starredLimit: number;
+    activityLimit: number;
+  };
   llm: { baseUrl: string; model: string };
   sources: {
     trending: { enabled: boolean; langs: string[]; window: "daily" | "weekly" | "monthly" };

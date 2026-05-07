@@ -11,12 +11,31 @@ const minimal = (slug = "2026-W19"): IssueData => ({
     url: "https://github.com/a/b",
     sources: ["trending"], sourceMeta: {},
     score: 100, reason: "r",
+    matchedThemes: [],
+    matchedLanguages: [],
     summary: { zh: "x", en: "y" },
   },
   items: [],
   meta: {
     config: { schedule: "weekly", languages: ["zh"] },
-    profile: { themes: [], languages: [], excludeThemes: [], notes: "" },
+    profile: {
+      version: 2,
+      generatedFrom: {
+        username: "alice",
+        generatedAt: "2026-05-07",
+        signals: { ownedRepos: 0, starredRepos: 0, activityRepos: 0, readmes: 0 },
+      },
+      coreThemes: [{
+        name: "test",
+        weight: 0.5,
+        confidence: "low",
+        evidence: [{ source: "explicit", note: "test" }],
+      }],
+      secondaryThemes: [],
+      languages: [],
+      excludeThemes: [],
+      notes: "",
+    },
     sourceCounts: {},
   },
 });
