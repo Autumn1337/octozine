@@ -77,6 +77,46 @@ After ~3 minutes:
 
 From then on, the workflow runs on the schedule you set.
 
+## Optional: push channels (Telegram / Email / RSS)
+
+Each channel is independent — enable any combination, or none.
+
+### RSS
+
+Always-on. The site exposes `/feed.xml` (Atom) and links to it via `<link rel="alternate">` from every page. Add the URL to your RSS reader.
+
+### Telegram
+
+1. Talk to [@BotFather](https://t.me/BotFather) → `/newbot` → save the token.
+2. Add the bot to a chat (DM or group) and send any message; then visit `https://api.telegram.org/bot<TOKEN>/getUpdates` to find the `chat.id` (e.g. `123456789` for DMs, `-100…` for groups).
+3. In `config/config.yaml`:
+   ```yaml
+   outputs:
+     telegram:
+       enabled: true
+       chat_id: "<the id from step 2>"
+   ```
+4. Add a repo secret `TELEGRAM_BOT_TOKEN` = the token from step 1.
+
+### Email (SMTP)
+
+1. Pick an SMTP provider (Gmail App Password, Resend, SendGrid, your own server).
+2. In `config/config.yaml`:
+   ```yaml
+   outputs:
+     email:
+       enabled: true
+       to: "you@example.com"
+   ```
+3. Add these repo secrets:
+   - `SMTP_HOST` (e.g. `smtp.gmail.com`)
+   - `SMTP_PORT` (e.g. `465` for TLS, `587` for STARTTLS)
+   - `SMTP_USER` (e.g. `you@gmail.com`)
+   - `SMTP_PASS` (the password / app-specific password)
+   - `SMTP_FROM` (the From: header; usually same as SMTP_USER)
+
+Push runs as a separate workflow step **after** the site has deployed, so a push misconfiguration never blocks publication. The step turns red in the Actions UI when push fails so you notice; the issue still lands on Pages.
+
 ## Optional: `GH_TOKEN` secret
 
 The `hn` and `events` sources call the GitHub REST API. Without auth you have a 60 req/h budget per IP; with a token, 5000 req/h.

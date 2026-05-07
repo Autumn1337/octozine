@@ -90,6 +90,13 @@ notes: |
 
 ---
 
+## 推送渠道（可选）
+
+除了 GitHub Pages，每期还可以推送到 **Telegram bot**、**Email (SMTP)**、**RSS / Atom feed**。
+全部 opt-in，配置见 [docs/setup.md](./docs/setup.md#optional-push-channels-telegram--email--rss)。
+
+---
+
 ## 历史归档
 
 每期 issue 自动归档为 git 历史 + Pages 上的 archive 页：

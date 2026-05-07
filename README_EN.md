@@ -90,6 +90,13 @@ Each recommended project gets a short Chinese **curator reason** ("why this one"
 
 ---
 
+## Push channels (optional)
+
+Beyond GitHub Pages, each issue can also fan-out to **Telegram (bot)**, **Email (SMTP)**, and **RSS / Atom**.
+All opt-in. See [docs/setup.md](./docs/setup.md#optional-push-channels-telegram--email--rss).
+
+---
+
 ## History archive
 
 Every issue is committed to git AND published to an archive page:

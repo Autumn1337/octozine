@@ -41,6 +41,13 @@ sources:
 
 outputs:
   pages: { enabled: true }
+  rss:   { enabled: true }              # always-on if Pages is on; serves at /feed.xml
+  telegram:
+    enabled: false
+    chat_id: ""                         # set chat_id; bot token goes in TELEGRAM_BOT_TOKEN secret
+  email:
+    enabled: false
+    to: ""                              # recipient; SMTP creds in secrets (see docs/setup.md)
 
 top_n: 5
 hero_n: 1
