@@ -10,24 +10,46 @@ profile:
   regenerate: false
 
 llm:
-  # Built-in providers (one line switches base_url + default model):
-  #   openai | deepseek | moonshot | qwen | zhipu | groq | ollama
+  # Pick a provider — one line switches base_url + default model.
+  # Built-in: openai | deepseek | moonshot | qwen | zhipu | groq | ollama
   # For anything else, set `provider: custom` and supply `base_url` + `model` below.
   provider: deepseek
 
-  # Optional — override the provider's default model.
-  # Leave commented to use the registered default (see README provider table).
-  # Each provider's official model list (verified 2026-05):
-  #   openai   → https://platform.openai.com/docs/models                                        default: gpt-5.4-mini
-  #   deepseek → https://api-docs.deepseek.com/quick_start/pricing                              default: deepseek-v4-flash
-  #   moonshot → https://platform.kimi.com/docs/api/chat                                        default: moonshot-v1-128k
-  #   qwen     → https://help.aliyun.com/zh/model-studio/getting-started/models                 default: qwen-plus
-  #   zhipu    → https://docs.bigmodel.cn/cn/guide/models/text/glm-4.7                          default: glm-4.5-air
-  #   groq     → https://console.groq.com/docs/models                                           default: llama-3.1-8b-instant
+  # Want a different model? Uncomment the line for YOUR provider below
+  # (only one `model:` may be active in this block at a time).
+  # If you don't uncomment anything, the provider's default is used.
+  # All model names verified 2026-05 — for the latest list click each provider's docs.
+  #
+  # ── openai ──   default `gpt-5.4-mini`  ·  stronger: gpt-5.4 / gpt-5.5  ·  cheaper: gpt-4.1-mini
+  #               docs: https://platform.openai.com/docs/models
+  # model: gpt-5.4
+  #
+  # ── deepseek ── default `deepseek-v4-flash`  ·  stronger: deepseek-v4-pro
+  #               docs: https://api-docs.deepseek.com/quick_start/pricing
   # model: deepseek-v4-pro
-
-  # base_url is also overridable (only needed for `provider: custom` or self-hosted gateways):
+  #
+  # ── moonshot ── default `moonshot-v1-128k`  ·  shorter ctx is faster: moonshot-v1-32k  ·  newer: kimi-k2-thinking
+  #               docs: https://platform.kimi.com/docs/api/chat
+  # model: moonshot-v1-32k
+  #
+  # ── qwen ──    default `qwen-plus`  ·  stronger: qwen-max  ·  newer gen: qwen3.6-plus / qwen3.6-flash
+  #               docs: https://help.aliyun.com/zh/model-studio/getting-started/models
+  # model: qwen-max
+  #
+  # ── zhipu ──   default `glm-4.5-air`  ·  free tier: glm-4.5-flash  ·  newest: glm-4.7
+  #               docs: https://docs.bigmodel.cn/cn/guide/models/text/glm-4.7
+  # model: glm-4.7
+  #
+  # ── groq ──    default `llama-3.1-8b-instant`  ·  stronger: llama-3.3-70b-versatile  ·  OSS: openai/gpt-oss-20b
+  #               docs: https://console.groq.com/docs/models
+  # model: llama-3.3-70b-versatile
+  #
+  # ── ollama ──  default `llama3.1`  ·  any model you've `ollama pull`-ed locally
+  # model: llama3.3
+  #
+  # ── custom ──  required when provider: custom — supply both base_url AND model:
   # base_url: https://your-endpoint.example/v1
+  # model: your-model
 
   # API key goes in GitHub Secrets as LLM_API_KEY.
 

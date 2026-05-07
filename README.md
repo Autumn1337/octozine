@@ -133,14 +133,33 @@ notes: |
 
 ## 切换 LLM Provider 和模型
 
+### 换 Provider
+
+直接改 `config/config.yaml` 的 `provider:` 那一行,7 家任选(见下表)。
+
+### 换 model
+
+打开 `config/config.yaml`,`llm:` 块下面已经为每家 provider 准备了一行注释好的 `# model:` 例子。**找到你 provider 那一行,把前面的 `#` 去掉就行**:
+
 ```yaml
-# config/config.yaml
-llm:
-  provider: deepseek                # ← 选一家(见下表)
-  # model: deepseek-v4-pro          # ← 可选。不写就用默认 model
+# 改前:
+  # ── deepseek ── default `deepseek-v4-flash`  ·  stronger: deepseek-v4-pro
+  #               docs: https://api-docs.deepseek.com/quick_start/pricing
+  # model: deepseek-v4-pro
+
+# 改后(把最后一行的 `#` 去掉):
+  # ── deepseek ── default `deepseek-v4-flash`  ·  stronger: deepseek-v4-pro
+  #               docs: https://api-docs.deepseek.com/quick_start/pricing
+  model: deepseek-v4-pro
 ```
 
-下表的默认 model 是 octozine 内置的;同家替代 model 写在 `model:` 字段就生效。各家 model 命名变化很快——现在的当前列表点 docs 链接(全部 2026-05 验证过):
+⚠️ 整个 `llm:` 块只能有一个 `model:` 启用——别同时取消两行注释。
+
+想换成同家的别的 model? 改 `model:` 后面的字符串就行,例如 `model: deepseek-v4-pro` → `model: deepseek-chat`。各家可选 model 见下表 docs 链接。
+
+### 默认值速查表
+
+各家默认 model 和几个常见替代(全部 2026-05 验证过;最新列表点 docs):
 
 | `provider:` | 默认模型 | 几个常见替代 | 当前 model 列表 |
 |---|---|---|---|
@@ -155,7 +174,8 @@ llm:
 
 摘要质量对 model 不敏感——默认这档(基本都是各家最便宜的"flash / mini"挡)对 octozine 的 rank + summarize 任务已经够用。要更精确的精排原因 / 更长的双语摘要,可以试更大的 model,成本仍在毛分钱量级。
 
-不在表里的 provider(xAI / Together / 自部署 vLLM 等):
+### 不在表里的 provider(xAI / Together / 自部署 vLLM 等)
+
 ```yaml
 llm:
   provider: custom

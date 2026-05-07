@@ -134,14 +134,33 @@ Want to refresh the profile (e.g., your starred set has shifted)? Set `regenerat
 
 ## Switch LLM provider and model
 
+### Switching provider
+
+Just change `provider:` in `config/config.yaml`. 7 built-in providers (table below).
+
+### Switching model
+
+Open `config/config.yaml`. The `llm:` block has a pre-written commented `# model:` example for each provider. **Find the line for your provider and remove the leading `#`**:
+
 ```yaml
-# config/config.yaml
-llm:
-  provider: deepseek                # ← pick one from the table below
-  # model: deepseek-v4-pro          # ← optional. Leave commented to use the default
+# Before:
+  # ── deepseek ── default `deepseek-v4-flash`  ·  stronger: deepseek-v4-pro
+  #               docs: https://api-docs.deepseek.com/quick_start/pricing
+  # model: deepseek-v4-pro
+
+# After (uncomment the last line):
+  # ── deepseek ── default `deepseek-v4-flash`  ·  stronger: deepseek-v4-pro
+  #               docs: https://api-docs.deepseek.com/quick_start/pricing
+  model: deepseek-v4-pro
 ```
 
-The "default model" column lists what octozine ships with; alternatives can be swapped in via the `model:` field. Provider model lists evolve fast — for the current set click the docs link (all verified 2026-05):
+⚠️ Only **one** `model:` may be active in the `llm:` block — don't uncomment two of them.
+
+Want a different model from the same provider? Just edit the string after `model:`, e.g. `model: deepseek-v4-pro` → `model: deepseek-chat`. See the docs link in the table below for each provider's current model lineup.
+
+### Defaults reference
+
+Every default + a few common alternatives (all verified 2026-05; click docs for the latest list):
 
 | `provider:` | Default model | Common alternatives | Current model list |
 |---|---|---|---|
@@ -156,7 +175,8 @@ The "default model" column lists what octozine ships with; alternatives can be s
 
 Summary quality is not very model-sensitive — every default above is a "flash / mini" tier and is good enough for octozine's rank + summarize workload. For higher-quality rank reasons or longer bilingual summaries, try the bigger models — cost stays in the cents-per-issue range.
 
-For providers not in the table (xAI, Together, self-hosted vLLM, …):
+### Providers not in the table (xAI, Together, self-hosted vLLM, …)
+
 ```yaml
 llm:
   provider: custom
