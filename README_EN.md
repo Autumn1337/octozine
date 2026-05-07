@@ -1,9 +1,9 @@
 <h1 align="center">Octozine</h1>
 
 <p align="center">
-  <em>Octozine：Fork your own GitHub curator.</em>
+  <em>Octozine: Fork your own GitHub curator.</em>
   <br>
-  Not another trending list — fork your own GitHub curator.
+  Not another trending list — your own GitHub project radar, generated weekly.
 </p>
 
 <p align="center">
