@@ -51,6 +51,47 @@ llm:
   model: your-model
 ```
 
+### Cost estimate (weekly cron, default `top_n: 8`)
+
+A first run does 11 LLM calls (1 profile-extract + 1 profile-critic + 1 rank + 8 summarize).
+Steady-state runs (when the profile already exists) drop to 9 calls.
+
+| Provider · model | First run (11 calls) | Monthly (4 issues) | Notes |
+|---|---|---|---|
+| **DeepSeek `v4-flash`** (default) | ≈ ¥0.07 (~$0.01) | ≈ ¥0.3 (~$0.04) | Best price/quality |
+| **DeepSeek `v4-pro`** | ≈ ¥0.8 (measured ¥0.6 at `top_n: 5`, 18 min) | ≈ ¥3 (~$0.40) | Higher quality, 5-10× slower |
+| **OpenAI `gpt-5.4-mini`** | ≈ $0.07 | ≈ $0.30 | |
+| **Qwen `qwen-plus`** | ≈ ¥0.07 | ≈ ¥0.3 | |
+| **Zhipu `glm-4.5-air`** | ≈ ¥0.07 | ≈ ¥0.3 | |
+| **Groq `llama-3.1-8b-instant`** | free tier usually enough | ≈ $0 | Very fast inference |
+| **Ollama** (local) | $0 | $0 | Local GPU; JSON mode partially supported |
+| Moonshot 128k context | priced per official rates | — | 128k-context models cost more per token |
+
+**With `v4-flash` you stay under ¥5 (~$0.70) per year.**
+Running a premium model like `v4-pro` or `gpt-5.5` as default lands around ¥30-40 / $4-6 per year, with first runs taking 20-25 minutes.
+Cutting `top_n` back to 5 trims both cost and runtime by ~30%.
+
+### Changing the model
+
+The `llm:` block in `config/config.yaml` includes a pre-written commented `# model:` example for every provider — just uncomment the line for your provider (only one allowed at a time):
+
+```yaml
+# Want a different model? Uncomment the line for YOUR provider below.
+# ── deepseek ── default `deepseek-v4-flash`  ·  stronger: deepseek-v4-pro
+# model: deepseek-v4-pro
+# ── openai ──   default `gpt-5.4-mini`  ·  stronger: gpt-5.4 / gpt-5.5
+# model: gpt-5.4
+# ...
+```
+
+Or to override directly:
+
+```yaml
+llm:
+  provider: deepseek
+  model: deepseek-v4-pro
+```
+
 ## 2. Add your LLM API key as a repo secret
 
 GitHub repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**:

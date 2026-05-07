@@ -3,7 +3,7 @@
 <p align="center">
   <em>Octozine：Fork your own GitHub curator.</em>
   <br>
-  Fork it once. Get a GitHub project zine <strong>tailored to you</strong>.
+  Not another trending list — fork your own GitHub curator.
 </p>
 
 <p align="center">
@@ -25,7 +25,7 @@
 <p align="center">
   <a href="https://autumn1337.github.io/octozine/">Live demo</a>
   ·
-  <a href="#5-minutes-to-first-issue">5-minute setup</a>
+  <a href="#5-minutes-to-first-issue">Quickstart</a>
   ·
   <a href="./docs/setup.md">Setup</a>
   ·
@@ -34,21 +34,23 @@
 
 ---
 
-## Not Just Trending
+## What it solves
 
-GitHub Trending shows everyone the same list. Octozine reads your GitHub signals:
+GitHub Trending tells you what everyone is looking at.
+Octozine tells you **which projects are worth your time, and why**.
 
-- profile / bio
-- public repos you maintain
-- recent public activity
-- starred repos
-- representative README excerpts
+It's not a generic newsletter, and it's not a hand-curated weekly.
+It's a **personal GitHub discovery pipeline you can fork**.
 
-Then it discovers projects from GitHub Trending, Search API, Hacker News, and optional Events, ranks them against your profile, and publishes a weekly magazine-style site.
+Every Monday, a GitHub Action in your fork runs and produces an issue made for you alone.
+
+---
+
+## How it works
 
 ```text
 Your GitHub signals
-profile · owned repos · activity · stars · README
+profile · owned repos · activity · stars · README excerpts
         ↓
 Discovery sources
 Trending · Search · HN · Events
@@ -60,23 +62,50 @@ Your weekly zine
 GitHub Pages · RSS · Telegram · Email
 ```
 
-Every fork gets different output. The point is not “what is popular today”, but “why this project fits you”.
+Each issue picks **8 projects by default** out of ~150 candidates (tunable via `top_n` in `config.yaml`).
+Every project comes with:
+
+- bilingual zh/en summaries
+- a one-line "why this one" reason in Chinese
+- which themes / languages from your profile this match hits
+- the source signals (Trending + HN, etc.)
 
 ---
 
-## 5 Minutes To First Issue
+## Every fork is different
 
-Before starting, get an OpenAI-compatible LLM API key. [DeepSeek](https://platform.deepseek.com) is the recommended default, but OpenAI, Qwen, Moonshot, Zhipu, Groq, Ollama, and custom endpoints also work.
+The same candidate pool produces a completely different zine for different profiles:
+
+| Profile | Likely surfaces |
+|---|---|
+| AI infra engineer | inference engines · evals · vector DBs · agent runtimes |
+| Frontend tool author | build tools · UI libraries · DX · design systems |
+| Rust / CLI hacker | terminal UI · systems tools · performance libraries |
+| Indie hacker | micro-SaaS tools · single-file / minimalist projects · self-hostable components |
+
+The point isn't to replay the trending list.
+It's to **filter public trends into a personal recommendation**.
+
+---
+
+## 5 minutes to first issue
+
+You need:
+
+- A GitHub account
+- An OpenAI-compatible LLM API key ([DeepSeek](https://platform.deepseek.com) recommended — accessible from China + < ¥5/yr at weekly cron)
+- **Strongly recommended**: a GitHub Personal Access Token as a `GH_TOKEN` secret — avoids the 60 req/h anonymous GitHub API limit (two back-to-back runs hit the wall)
 
 All steps below happen on GitHub.com. No local clone required.
 
 ### 1. Fork
 
-Click [Fork this repo](https://github.com/Autumn1337/octozine/fork). Everything below happens inside your fork.
+Click [Fork this repo](https://github.com/Autumn1337/octozine/fork).
+Everything below happens inside your fork.
 
 ### 2. Edit two config lines
 
-Open `config/config.yaml`, click the pencil icon, and change:
+Open `config/config.yaml`, click the pencil icon to edit:
 
 ```yaml
 github_username: yourname
@@ -84,76 +113,40 @@ llm:
   provider: deepseek
 ```
 
-Replace `yourname` with your GitHub username. Change `provider` to whichever provider your key belongs to (see the full table at [LLM Provider](#llm-provider) below). Commit the file directly to main.
+Replace `yourname` with your GitHub username, and set `provider` to whichever provider your key belongs to.
+Commit directly to main.
 
-### 3. Add the secret
+### 3. Add secrets
 
-In your fork, open:
+In your fork: `Settings → Secrets and variables → Actions → New repository secret`. Add:
 
-`Settings → Secrets and variables → Actions → New repository secret`
+- **`LLM_API_KEY`** — your LLM key
+- **`GH_TOKEN`** (strongly recommended) — any GitHub Personal Access Token ([github.com/settings/tokens](https://github.com/settings/tokens), classic, no scopes required)
 
-- **Name**: `LLM_API_KEY`
-- **Secret**: paste your LLM API key
+### 4. Enable Pages
 
-**⚠️ Strongly recommended: add a `GH_TOKEN` secret too** (any GitHub Personal Access Token, no scopes required):
+`Settings → Pages` → set **Source** to **GitHub Actions**.
 
-- Without it: GitHub anonymous API limit is **60 req/h**, and one octozine run uses ~30. Two runs back-to-back will hit the wall.
-- With it: **5000 req/h**, effectively unlimited.
+> ⚠️ Don't pick "Deploy from a branch" — your site will 404 or be unstyled.
 
-Grab a token: [github.com/settings/tokens](https://github.com/settings/tokens) → Tokens (classic) → Generate new token → leave all scopes unchecked → copy the `ghp_...` string → add it the same way with name `GH_TOKEN`.
+### 5. Trigger the first run
 
-### 4. Enable GitHub Pages
+`Actions → Octozine Daily → Run workflow`.
 
-Open:
+In 3-5 minutes you'll see:
 
-`Settings → Pages`
+- A new commit on main: `data: issue 2026-WXX [skip ci]`
+- Your site live at `https://yourname.github.io/octozine/`
+- The workflow runs every Monday 09:00 UTC after that (change the schedule via [docs/setup.md](./docs/setup.md))
 
-- Set **Source** to **GitHub Actions**
-
-Do not choose “Deploy from a branch”. That is the most common cause of 404 or unstyled pages.
-
-### 5. Run once
-
-Open:
-
-`Actions → Octozine Daily → Run workflow`
-
-After 3-5 minutes, a new commit should land on main:
-
-```text
-data: issue 2026-W19 [skip ci]
-  data/issues/2026-W19.json
-  config/profile.yaml
-```
-
-Your site will be live at:
-
-```text
-https://yourname.github.io/octozine/
-```
-
-After that, it runs every Monday at 09:00 UTC. Change the schedule in [docs/setup.md](./docs/setup.md).
-
----
-
-## What It Publishes
-
-Each issue picks **8 projects by default** out of ~150 candidates (Trending / Search / HN) — tune it via `top_n` in `config/config.yaml` (e.g. `top_n: 12` for breadth, `top_n: 5` for a tight curated feel). Each pick comes with:
-
-- bilingual zh/en summaries
-- a Chinese “why this one” reason
-- matched profile themes / languages
-- source signals, such as Trending + HN
-- RSS feed
-- optional Telegram / Email push
-
-The core value is not listing projects. It is explaining why they belong in your feed.
+If something breaks, see [Troubleshooting](#troubleshooting) below.
 
 ---
 
 ## Personalization
 
-On first run, Octozine writes `config/profile.yaml`. This is a hand-editable v2 profile:
+On the first run, Octozine writes `config/profile.yaml` and commits it back to main.
+This is a hand-editable v2 profile:
 
 ```yaml
 version: 2
@@ -175,7 +168,7 @@ exclude_themes:
     reason: Explicitly excluded or rarely appears in strong signals.
 ```
 
-See the full schema in [config/profile.yaml.example](./config/profile.yaml.example).
+Full schema: [config/profile.yaml.example](./config/profile.yaml.example).
 
 To give the generator explicit hints, edit `config/config.yaml`:
 
@@ -186,7 +179,7 @@ profile:
   exclude: [crypto, marketing automation]
 ```
 
-To rebuild the profile, set `regenerate` to `true`. The next run rewrites the profile and flips it back to `false`.
+To rebuild the profile from scratch, set `regenerate: true`. The next run rewrites it and flips the flag back.
 
 ---
 
@@ -195,59 +188,71 @@ To rebuild the profile, set `regenerate` to `true`. The next run rewrites the pr
 ```yaml
 llm:
   provider: deepseek
-  # model: deepseek-v4-pro
+  # model: deepseek-v4-pro    # optional; config.yaml has commented examples for each provider
 ```
 
-| `provider` | Default model | Sign-up | Model list |
-|---|---|---|---|
-| **`deepseek`** | `deepseek-v4-flash` | [platform.deepseek.com](https://platform.deepseek.com) | [docs](https://api-docs.deepseek.com/quick_start/pricing) |
-| `openai` | `gpt-5.4-mini` | [platform.openai.com](https://platform.openai.com) | [docs](https://platform.openai.com/docs/models) |
-| `moonshot` | `moonshot-v1-128k` | [platform.moonshot.cn](https://platform.moonshot.cn) | [docs](https://platform.kimi.com/docs/api/chat) |
-| `qwen` | `qwen-plus` | [bailian.console.aliyun.com](https://bailian.console.aliyun.com) | [docs](https://help.aliyun.com/zh/model-studio/getting-started/models) |
-| `zhipu` | `glm-4.5-air` | [open.bigmodel.cn](https://open.bigmodel.cn) | [docs](https://docs.bigmodel.cn/cn/guide/models/text/glm-4.7) |
-| `groq` | `llama-3.1-8b-instant` | [console.groq.com](https://console.groq.com) | [docs](https://console.groq.com/docs/models) |
-| `ollama` | `llama3.1` | local | - |
-| `custom` | - | any OpenAI-compatible endpoint | set `base_url` + `model` |
+**Recommended default**: DeepSeek `deepseek-v4-flash` — best price/quality, accessible from China, < ¥5/yr.
 
-DeepSeek is the recommended default: cheap, fast enough, and good for summaries. A steady-state issue takes about 9 LLM calls (rank + 8 summarize); first runs or profile rebuilds add 2 more (profile extract + critic).
+**Compatible**: OpenAI · Qwen · Moonshot · Zhipu · Groq · Ollama · any OpenAI-compatible endpoint (`provider: custom`).
 
-### Real-world cost estimate (weekly cron, default `top_n: 8`)
-
-| Provider · model | First run (11 calls) | Monthly (4 issues) | Notes |
-|---|---|---|---|
-| **DeepSeek `v4-flash`** (default) | ≈ ¥0.07 (~$0.01) | ≈ ¥0.3 (~$0.04) | Best price/quality |
-| **DeepSeek `v4-pro`** | ≈ ¥0.8 (measured ¥0.6 at `top_n: 5`, 18 min) | ≈ ¥3 (~$0.40) | Higher quality, 5-10× slower |
-| **OpenAI `gpt-5.4-mini`** | ≈ $0.07 | ≈ $0.30 | |
-| **Qwen `qwen-plus`** | ≈ ¥0.07 | ≈ ¥0.3 | |
-| **Zhipu `glm-4.5-air`** | ≈ ¥0.07 | ≈ ¥0.3 | |
-| **Groq `llama-3.1-8b-instant`** | free tier usually enough | ≈ $0 | Very fast inference |
-| **Ollama** (local) | $0 | $0 | Local GPU; JSON mode partially supported |
-| Moonshot 128k context | priced per official rates | — | 128k-context models cost more per token |
-
-**With `v4-flash` you stay under ¥5 (~$0.70) per year.** Running a premium model like `v4-pro` or `gpt-5.5` as default lands around ¥30-40 / $4-6 per year, with first runs taking 20-25 minutes. Cutting `top_n` back to 5 trims both cost and runtime by ~30%.
+Full model list + per-provider cost estimates → [docs/setup.md → Built-in providers](./docs/setup.md#built-in-providers).
 
 ---
 
 ## Subscribe to your zine
 
-By default, octozine deploys to **GitHub Pages** and autogenerates an **RSS feed**:
+By default, Octozine deploys to **GitHub Pages** and autogenerates an **RSS feed**:
 
 ```text
 https://yourname.github.io/octozine/feed.xml
 ```
 
-Drop that URL into Reeder / Feedly / Inoreader / NetNewsWire / any RSS reader and you'll get the weekly update wherever you already read. **This is the recommended default — zero extra setup; you get it just by following the 5-minute quickstart.**
+Drop this URL into Reeder / Feedly / Inoreader / NetNewsWire / any RSS reader and you'll get the weekly update wherever you already read.
+**This is the recommended default — zero extra setup; you get it just by following the 5-minute quickstart.**
 
 ### Advanced: Telegram / Email push (optional)
 
 If you'd rather have each issue pushed straight to Telegram or your inbox:
 
-- **Telegram bot** — get a token from BotFather, find your chat.id, add 1 secret
-- **Email (SMTP)** — recommended providers: [Resend](https://resend.com) (100 free/day) or Gmail App Password; configure SMTP credentials
+- **Telegram bot** — get a token from BotFather, add 1 secret
+- **Email (SMTP)** — recommended providers: [Resend](https://resend.com) (100 free/day) or Gmail App Password
 
-Step-by-step (BotFather walkthrough / SMTP provider picks / gotchas) lives in [docs/setup.md → push channels](./docs/setup.md#optional-push-channels-telegram--email--rss).
+Step-by-step in [docs/setup.md → push channels](./docs/setup.md#optional-push-channels-telegram--email--rss).
 
-> Push runs as a separate Action step **after** the Pages deploy, so a misconfigured push channel never blocks site publication. It's totally fine to ship with just RSS and add Telegram/Email later when you want to play.
+> Push runs as a separate Action step **after** the Pages deploy, so a misconfigured channel never blocks site publication.
+> Ship with just RSS, add Telegram/Email later when you want to play.
+
+---
+
+## Who it's for / not for
+
+**For**:
+
+- People who scroll GitHub Trending but find the noise unbearable
+- Folks who'd like to maintain a personal tech weekly without hand-curating
+- Open-source authors, technical bloggers, indie devs, AI / infra / devtool engineers
+- Anyone who wants a **SaaS-free** personal discovery pipeline
+
+**Not for**:
+
+- People who want a real-time news feed (Octozine is weekly, not a timeline)
+- People who want hand-edited deep commentary
+- People unwilling to configure an LLM API key
+- GitHub accounts with very little public activity (the profile won't have enough signal)
+
+---
+
+## How it differs from existing tools
+
+| Type | Examples | Best for | Where Octozine sits |
+|---|---|---|---|
+| Public leaderboards | GitHub Trending · OSSInsight · Trendshift | Seeing global hotness | **Filters global trends into a personal feed** |
+| Developer info streams | daily.dev · Folo | Continuous tech content consumption | **Not a stream — only a weekly zine** |
+| Hand-curated weeklies | GitHubDaily · open-source weeklies | Editor's picks | **Automated, forkable, personalized** |
+| AI radars | Horizon · similar aggregators | Multi-source monitoring | **Focused on GitHub project discovery** |
+
+Octozine doesn't try to replace those tools.
+It's more like a **self-hosted personal GitHub curator**.
 
 ---
 
@@ -255,35 +260,38 @@ Step-by-step (BotFather walkthrough / SMTP provider picks / gotchas) lives in [d
 
 **First run fails with `no usable GitHub signals`**
 
-`github_username` may still be `yourname`, or the account has no readable public repos / starred repos / public activity.
+`github_username` is probably still `yourname`, or the account has no public repos / starred / activity.
 
 **`LLM HTTP 401`**
 
-`LLM_API_KEY` is missing, or it does not match the selected provider.
+`LLM_API_KEY` is missing, or it doesn't match the `provider` you chose.
 
 **`only 1/3 fetchers survived`**
 
-Usually transient network trouble or GitHub’s anonymous API limit. Add `GH_TOKEN` to raise the limit from 60 req/h to 5000 req/h.
+Usually transient network or GitHub anonymous API limit. Add `GH_TOKEN` to lift it from 60 → 5000 req/h.
 
-**Actions succeeded, but the site is 404 / unstyled**
+**Action succeeds but the page 404s / has no styling**
 
-GitHub Pages Source is not set to **GitHub Actions**.
+Pages Source isn't set to **GitHub Actions**.
 
-More troubleshooting: [docs/setup.md](./docs/setup.md).
+More: [docs/setup.md](./docs/setup.md).
 
 ---
 
 ## Keeping your fork up to date
 
-GitHub forks **don't auto-sync from upstream**. When I fix a bug or ship a new feature, your fork stays at whatever version you forked at — you have to pull updates yourself.
+GitHub forks **don't auto-sync from upstream**.
+When I fix a bug or ship a new feature, your fork stays at whatever version you forked at — you have to pull updates yourself.
 
 ### One-click sync
 
-On your fork's main page, click **Sync fork → Update branch**. If you only edited `github_username` + `provider` in `config/config.yaml` and upstream hasn't touched `config.yaml`, GitHub will auto-merge it cleanly.
+On your fork's main page, click **Sync fork → Update branch**.
+If you only edited `github_username` + `provider` in `config/config.yaml` and upstream hasn't touched `config.yaml`, GitHub will auto-merge cleanly.
 
 ### Resolving conflicts
 
-The most common case: you customized `config/config.yaml`, and I happened to bump a default in the same file (e.g. `top_n: 5 → 8`). GitHub flags "Conflicts must be resolved" and disables the **Sync fork** button.
+The most common case: you customized `config/config.yaml`, and I happened to bump a default in the same file.
+GitHub flags "Conflicts must be resolved" and disables the **Sync fork** button.
 
 Easiest fix is locally:
 
@@ -299,19 +307,8 @@ git push
 
 ### Or skip syncing
 
-Your fork at the version you forked will keep working. Major changes ship as [GitHub Releases](https://github.com/Autumn1337/octozine/releases) — [Watch](https://github.com/Autumn1337/octozine) the repo set to "Releases only" so you get a notification on critical fixes.
-
----
-
-## Why Not Existing Tools
-
-| Tool | What it does | What Octozine does differently |
-|---|---|---|
-| `GitHubDaily` | Hand-curated general project list | Fully automated + personalized + forkable |
-| `agents-radar` | Tracks a fixed AI repo list | Real discovery, no preset repo list |
-| `Horizon` | Aggregates HN / Reddit / Twitter | Focuses on GitHub projects + personal profile ranking |
-
-Those tools serve everyone the same content. Octozine gives every fork a different issue.
+Your fork at the version you forked will keep working.
+Major changes ship as [GitHub Releases](https://github.com/Autumn1337/octozine/releases) — [Watch](https://github.com/Autumn1337/octozine) the repo set to "Releases only" so you get a notification on critical fixes.
 
 ---
 
@@ -323,7 +320,7 @@ npm test
 npm run typecheck
 ```
 
-Running the full pipeline requires `LLM_API_KEY`:
+Running the full pipeline needs `LLM_API_KEY`:
 
 ```bash
 LLM_API_KEY=sk-... npm run pipeline
