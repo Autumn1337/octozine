@@ -1,0 +1,68 @@
+{
+  "slug": "2026-W19",
+  "generatedAt": "2026-05-07T01:29:22.257Z",
+  "hero": {
+    "owner": "ratatui-org",
+    "repo": "ratatui",
+    "description": "Rust TUI library",
+    "stars": 12400,
+    "starsDelta": 320,
+    "language": "rust",
+    "topics": [
+      "tui"
+    ],
+    "url": "https://github.com/ratatui-org/ratatui",
+    "sources": [
+      "trending"
+    ],
+    "sourceMeta": {},
+    "score": 95,
+    "reason": "Rust + TUI 命中",
+    "summary": {
+      "zh": "用 Rust 写的终端 UI 库，被 gitui、atuin、helix 等新一代终端应用作为基础。",
+      "en": "A Rust library for building rich terminal UIs. It powers a growing wave of TUI tools including gitui, atuin, and helix."
+    }
+  },
+  "items": [
+    {
+      "owner": "astral-sh",
+      "repo": "uv",
+      "description": "Fast Python package manager",
+      "stars": 15200,
+      "starsDelta": 180,
+      "language": "rust",
+      "topics": [
+        "python"
+      ],
+      "url": "https://github.com/astral-sh/uv",
+      "sources": [
+        "trending"
+      ],
+      "sourceMeta": {},
+      "score": 88,
+      "reason": "Rust + 工具链",
+      "summary": {
+        "zh": "用 Rust 重写的极速 Python 包管理器，目标取代 pip + venv + pip-tools。",
+        "en": "A drop-in replacement for pip and venv, written in Rust. 10–100× faster on common workflows."
+      }
+    }
+  ],
+  "meta": {
+    "config": {
+      "schedule": "weekly",
+      "languages": [
+        "zh",
+        "en"
+      ]
+    },
+    "profile": {
+      "themes": [],
+      "languages": [],
+      "excludeThemes": [],
+      "notes": ""
+    },
+    "sourceCounts": {
+      "trending": 2
+    }
+  }
+}
