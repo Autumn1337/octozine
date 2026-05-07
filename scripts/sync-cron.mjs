@@ -18,7 +18,8 @@ export function scheduleToCron(s) {
   throw new Error(`scheduleToCron: unknown schedule alias "${s}". Use "weekly", "daily", or a cron expression.`);
 }
 
-const CRON_LINE_RE = /^(\s*-\s*cron:\s*)(?:"([^"]*)"|'([^']*)'|(\S.*))(\s*)$/m;
+// prefix → cron value (quoted or bare token, no embedded whitespace or `#`) → optional inline whitespace + comment
+const CRON_LINE_RE = /^(\s*-\s*cron:\s*)(?:"([^"]*)"|'([^']*)'|([^\s"'#]+))([ \t]*(?:#.*)?)$/m;
 
 export function applyCronToWorkflow(yml, cron) {
   if (!CRON_LINE_RE.test(yml)) {

@@ -33,4 +33,10 @@ describe("applyCronToWorkflow", () => {
   it("throws if no cron line found", () => {
     expect(() => applyCronToWorkflow("name: x\non:\n  workflow_dispatch:\n", "0 9 * * 1")).toThrow();
   });
+
+  it("preserves inline comment after the cron value", () => {
+    const input = '    - cron: "0 9 * * 1"          # weekly Monday 09:00 UTC\n';
+    const out = applyCronToWorkflow(input, "30 6 * * 5");
+    expect(out).toBe('    - cron: "30 6 * * 5"          # weekly Monday 09:00 UTC\n');
+  });
 });
