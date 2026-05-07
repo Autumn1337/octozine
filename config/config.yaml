@@ -8,9 +8,15 @@ profile:
   regenerate: false             # true on next run = re-generate profile.yaml from starred
 
 llm:
-  base_url: https://api.deepseek.com
-  model: deepseek-chat
-  # API key goes in GitHub Secrets as LLM_API_KEY
+  # Pick a provider — one line switches everything else for you.
+  # Built-in: openai | deepseek | moonshot | qwen | zhipu | groq | ollama
+  # Or use `provider: custom` and supply `base_url` + `model` explicitly.
+  provider: deepseek
+
+  # Override the provider's default model (optional):
+  # model: deepseek-v4-pro
+
+  # API key goes in GitHub Secrets as LLM_API_KEY.
 
 sources:
   trending:

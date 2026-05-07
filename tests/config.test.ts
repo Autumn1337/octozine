@@ -54,6 +54,44 @@ history_window: 4
   });
 });
 
+describe("parseConfig llm provider resolution", () => {
+  const base = `
+schedule: weekly
+languages: [zh, en]
+github_username: x
+profile: { regenerate: false }
+sources:
+  trending: { enabled: true, langs: [], window: weekly }
+outputs:
+  pages: { enabled: true }
+top_n: 5
+hero_n: 1
+history_window: 4
+`;
+
+  it("provider name resolves to baseUrl + model", () => {
+    const cfg = parseConfig(base + "llm:\n  provider: openai\n");
+    expect(cfg.llm.baseUrl).toBe("https://api.openai.com/v1");
+    expect(cfg.llm.model).toBe("gpt-4o-mini");
+  });
+
+  it("provider + model override", () => {
+    const cfg = parseConfig(base + "llm:\n  provider: deepseek\n  model: deepseek-v4-pro\n");
+    expect(cfg.llm.baseUrl).toBe("https://api.deepseek.com");
+    expect(cfg.llm.model).toBe("deepseek-v4-pro");
+  });
+
+  it("custom provider requires baseUrl + model", () => {
+    expect(() => parseConfig(base + "llm:\n  provider: custom\n  model: m\n")).toThrow();
+  });
+
+  it("backward compat: bare base_url + model works (no provider field)", () => {
+    const cfg = parseConfig(base + "llm:\n  base_url: https://api.deepseek.com\n  model: deepseek-chat\n");
+    expect(cfg.llm.baseUrl).toBe("https://api.deepseek.com");
+    expect(cfg.llm.model).toBe("deepseek-chat");
+  });
+});
+
 describe("parseProfile", () => {
   it("accepts a minimal profile", () => {
     const yaml = `

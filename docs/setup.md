@@ -12,8 +12,8 @@ After you fork this repo, do these 4 things and your weekly issues start publish
 Edit `config/config.yaml`:
 
 - `github_username` — set to your GitHub username
-- `llm.base_url` — your LLM provider's endpoint
-- `llm.model` — the model name (e.g. `deepseek-v4-pro`)
+- `llm.provider` — pick a built-in provider name (see table below) or `custom`
+- `llm.model` — *(optional)* override the provider's default model
 - `sources.trending.langs` — the languages you want to follow
 - `schedule` — `weekly` (default), `daily`, or a custom cron expression
 
@@ -26,6 +26,27 @@ npm run sync-cron
 git add .github/workflows/daily.yml
 git commit -m "chore: sync workflow cron"
 git push
+```
+
+### Built-in providers
+
+| `provider:` | base_url | default model | notes |
+|---|---|---|---|
+| `openai` | `https://api.openai.com/v1` | `gpt-4o-mini` | |
+| `deepseek` | `https://api.deepseek.com` | `deepseek-v4-flash` | cheap and fast; use `model: deepseek-v4-pro` for higher quality |
+| `moonshot` | `https://api.moonshot.cn/v1` | `moonshot-v1-128k` | Kimi (China) |
+| `qwen` | `https://dashscope.aliyuncs.com/compatible-mode/v1` | `qwen-plus` | Alibaba DashScope (China) |
+| `zhipu` | `https://open.bigmodel.cn/api/paas/v4` | `glm-4.5` | Zhipu / GLM (China) |
+| `groq` | `https://api.groq.com/openai/v1` | `llama-3.1-8b-instant` | very fast inference |
+| `ollama` | `http://localhost:11434/v1` | `llama3.1` | local; JSON mode is best-effort |
+
+For anything else (xAI, Together, self-hosted vLLM, etc.) use:
+
+```yaml
+llm:
+  provider: custom
+  base_url: https://your-endpoint.example/v1
+  model: your-model
 ```
 
 ## 2. Add your LLM API key as a repo secret

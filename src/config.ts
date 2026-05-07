@@ -1,6 +1,7 @@
 import { z } from "zod";
 import yaml from "js-yaml";
 import type { Config, Profile } from "./types.js";
+import { resolveLlmConfig, type ProviderName } from "./llm/providers.js";
 
 const SourcesSchema = z.object({
   trending: z.object({
@@ -33,7 +34,11 @@ const ConfigSchema = z.object({
   languages: z.array(z.enum(["zh", "en"])).min(1),
   github_username: z.string().min(1),
   profile: z.object({ regenerate: z.boolean() }),
-  llm: z.object({ base_url: z.string().url(), model: z.string().min(1) }),
+  llm: z.object({
+    provider: z.string().min(1).optional(),
+    base_url: z.string().url().optional(),
+    model: z.string().min(1).optional(),
+  }),
   sources: SourcesSchema,
   outputs: OutputsSchema,
   top_n: z.number().int().positive(),
@@ -56,7 +61,11 @@ export function parseConfig(text: string): Config {
     languages: parsed.languages,
     githubUsername: parsed.github_username,
     profile: parsed.profile,
-    llm: { baseUrl: parsed.llm.base_url, model: parsed.llm.model },
+    llm: resolveLlmConfig({
+      provider: (parsed.llm.provider ?? (parsed.llm.base_url ? "custom" : "deepseek")) as ProviderName,
+      ...(parsed.llm.base_url ? { baseUrl: parsed.llm.base_url } : {}),
+      ...(parsed.llm.model ? { model: parsed.llm.model } : {}),
+    }),
     sources: {
       trending: parsed.sources.trending,
       ...(parsed.sources.search ? { search: parsed.sources.search } : {}),
