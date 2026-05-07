@@ -14,6 +14,12 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  # Opt actions/* (checkout, setup-node, configure-pages, deploy-pages, etc.)
+  # into Node 24 ahead of GitHub's 2026-06-02 default switch — silences the
+  # Node 20 deprecation warning. See https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   run:
     runs-on: ubuntu-latest
