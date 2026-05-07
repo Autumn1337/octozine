@@ -72,6 +72,7 @@ github_username: <your GitHub username>     # ← change this. First run pulls y
 
 llm:
   provider: deepseek                        # ← whichever provider you got a key for (table above)
+  # model: deepseek-v4-pro                  # ← optional. Leave commented to use the provider's default
 
 profile:
   regenerate: true                          # ← set true on first run; LLM will rebuild profile from your starred and flip this back automatically
@@ -131,27 +132,37 @@ Want to refresh the profile (e.g., your starred set has shifted)? Set `regenerat
 
 ---
 
-## Switch LLM provider
+## Switch LLM provider and model
 
 ```yaml
 # config/config.yaml
 llm:
-  provider: deepseek      # ← change to any below
+  provider: deepseek                # ← pick one from the table below
+  # model: deepseek-v4-pro          # ← optional. Leave commented to use the default
 ```
 
-| `provider:` | Default model | Notes |
-|---|---|---|
-| `openai` | `gpt-4o-mini` | OpenAI official |
-| `deepseek` | `deepseek-v4-flash` | Cheap, fast, China-friendly |
-| `moonshot` | `moonshot-v1-128k` | Kimi (China) |
-| `qwen` | `qwen-plus` | Alibaba DashScope |
-| `zhipu` | `glm-4.5` | Zhipu / GLM |
-| `groq` | `llama-3.1-8b-instant` | Very fast inference |
-| `ollama` | `llama3.1` | Local; JSON mode partially supported |
-| `custom` | — | Any OpenAI-compatible endpoint |
+Every provider ships with a default model (good price/quality balance) plus a list of alternatives you can swap in via the `model:` field:
 
-Override the model: `model: deepseek-v4-pro`.
-For providers not in the table: `provider: custom` + `base_url` + `model`.
+| `provider:` | Default model | Same-provider alternatives (write in `model:`) |
+|---|---|---|
+| `openai` | `gpt-4o-mini` | `gpt-4o`, `gpt-5` |
+| `deepseek` | `deepseek-v4-flash` | `deepseek-v4-pro` |
+| `moonshot` | `moonshot-v1-128k` | `moonshot-v1-8k`, `moonshot-v1-32k` |
+| `qwen` | `qwen-plus` | `qwen-max`, `qwen-turbo` |
+| `zhipu` | `glm-4.5` | `glm-4-plus`, `glm-4-air` |
+| `groq` | `llama-3.1-8b-instant` | `llama-3.3-70b-versatile` |
+| `ollama` | `llama3.1` | any model you've pulled locally |
+| `custom` | — | requires `base_url` + `model` |
+
+Specific model availability evolves fast — the table only lists defaults plus a few common alternatives. Summary quality is not very model-sensitive; the defaults are good enough for most users. For higher-quality rank reasons or longer bilingual summaries, try the bigger models (cost goes up but still in the cents/issue range).
+
+For providers not in the table (xAI, Together, self-hosted vLLM, …):
+```yaml
+llm:
+  provider: custom
+  base_url: https://your-endpoint.example/v1
+  model: your-model
+```
 
 ---
 
