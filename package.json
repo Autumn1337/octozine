@@ -7,6 +7,7 @@
   "engines": { "node": ">=20" },
   "scripts": {
     "pipeline": "node --import tsx/esm src/index.ts",
+    "push": "node --import tsx/esm src/push.ts",
     "sync-cron": "node scripts/sync-cron.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -15,11 +16,13 @@
   "dependencies": {
     "cheerio": "^1.0.0",
     "js-yaml": "^4.1.0",
+    "nodemailer": "^6.9.0",
     "zod": "^3.23.0"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.12.0",
+    "@types/nodemailer": "^6.4.0",
     "tsx": "^4.7.0",
     "typescript": "^5.4.0",
     "vitest": "^1.6.0"
