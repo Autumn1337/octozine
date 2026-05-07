@@ -68,6 +68,8 @@ Override the model: `model: deepseek-v4-pro`. For providers not in the table: `p
 
 ## Personalize your discoveries
 
+**On first run, octozine auto-generates `config/profile.yaml` from your last 100 starred repos.** Edit it any time, or flip `profile.regenerate: true` in `config/config.yaml` to refresh; the flag flips back after the run.
+
 `config/profile.yaml` describes your interests; the LLM ranks candidates against this profile:
 
 ```yaml

@@ -5,7 +5,9 @@ languages: [zh, en]
 github_username: yourname
 
 profile:
-  regenerate: false             # true on next run = re-generate profile.yaml from starred
+  # On first run with no profile.yaml present, octozine auto-generates one from your starred repos.
+  # Set this to `true` to force a refresh on the next run; it will be flipped back automatically.
+  regenerate: false
 
 llm:
   # Pick a provider — one line switches everything else for you.

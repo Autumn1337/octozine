@@ -68,6 +68,8 @@ llm:
 
 ## 个性化你的发现
 
+**首次运行时自动从你最近 100 个 starred 项目生成 `config/profile.yaml`**，可随意手编；改了 starred 后想刷新画像，把 `config/config.yaml` 里的 `profile.regenerate: true`，下次跑完会自动翻回 false。
+
 `config/profile.yaml` 描述你的兴趣，LLM 按这份"画像"做精排：
 
 ```yaml

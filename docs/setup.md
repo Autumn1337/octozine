@@ -19,6 +19,8 @@ Edit `config/config.yaml`:
 
 Optionally edit `config/profile.yaml` to describe your interests (themes, languages, exclusions).
 
+> **Heads up:** if `config/profile.yaml` is missing on first run, octozine will auto-generate it from your last 100 starred repos and commit it back. To regenerate later (e.g., after your tastes shift), set `profile.regenerate: true` in `config/config.yaml`; the next run will rewrite the profile and flip the flag back.
+
 If you change `schedule`, run locally:
 ```bash
 npm install
