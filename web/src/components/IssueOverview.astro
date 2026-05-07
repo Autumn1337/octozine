@@ -1,0 +1,85 @@
+---
+type SourceCounts = Record<string, number | undefined>;
+
+type ProfileTheme = {
+  name: string;
+  weight?: number;
+  confidence?: string;
+};
+
+type IssueMeta = {
+  profile?: {
+    coreThemes?: ProfileTheme[];
+    secondaryThemes?: ProfileTheme[];
+    languages?: { name: string; weight?: number; evidenceCount?: number }[];
+    generatedFrom?: {
+      username?: string;
+      signals?: {
+        ownedRepos?: number;
+        starredRepos?: number;
+        activityRepos?: number;
+        readmes?: number;
+      };
+    };
+  };
+  sourceCounts?: SourceCounts;
+};
+
+interface Props {
+  meta: IssueMeta;
+  generatedAt: string;
+}
+
+const { meta, generatedAt } = Astro.props;
+
+const sourceEntries = Object.entries(meta.sourceCounts ?? {})
+  .filter(([, count]) => typeof count === "number" && count > 0)
+  .sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0));
+const sourceText = sourceEntries.length === 0
+  ? "—"
+  : sourceEntries.map(([s, c]) => `${s} ${c}`).join(" · ");
+
+const profile = meta.profile;
+const themes = [
+  ...(profile?.coreThemes ?? []),
+  ...(profile?.secondaryThemes ?? []),
+].slice(0, 4);
+const themesText = themes.length === 0
+  ? "—"
+  : themes.map(t => t.name).join(" · ");
+
+const languages = (profile?.languages ?? []).slice(0, 4);
+const languagesText = languages.length === 0
+  ? null
+  : languages.map(l => l.name).join(" · ");
+
+const signals = profile?.generatedFrom?.signals;
+const signalsText = signals
+  ? `${signals.ownedRepos ?? 0} owned · ${signals.starredRepos ?? 0} starred · ${signals.activityRepos ?? 0} active · ${signals.readmes ?? 0} readme`
+  : null;
+
+const username = profile?.generatedFrom?.username;
+const generatedDate = new Date(generatedAt);
+const generatedLabel = Number.isNaN(generatedDate.getTime())
+  ? generatedAt
+  : generatedDate.toLocaleDateString("en", { year: "numeric", month: "short", day: "2-digit" });
+---
+<aside class="colophon" aria-label="About this issue">
+  <p class="kicker" style="margin-bottom: 18px;">About this issue</p>
+  <dl class="colophon-grid">
+    <dt>Sources</dt>
+    <dd>{sourceText}</dd>
+    <dt>Personal lens</dt>
+    <dd>{themesText}</dd>
+    {languagesText && <>
+      <dt>Languages</dt>
+      <dd>{languagesText}</dd>
+    </>}
+    {signalsText && <>
+      <dt>Signals</dt>
+      <dd>{signalsText}</dd>
+    </>}
+    <dt>Generated</dt>
+    <dd>{generatedLabel}{username && <span class="muted"> · @{username}</span>}</dd>
+  </dl>
+</aside>

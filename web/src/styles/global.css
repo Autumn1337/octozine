@@ -1,247 +1,442 @@
-:root {
-  --bg:           #FAFAF7;
-  --fg:           #1A1A1A;
-  --fg-strong:    #131313;
-  --fg-2:         #555;
-  --fg-3:         #888;
-  --fg-4:         #999;
-  --fg-5:         #aaa;
-  --rule:         rgba(0,0,0,0.08);
-  --rule-soft:    rgba(0,0,0,0.06);
-  --accent:       #B45309;
-  --up:           #047857;
+/*
+ * Octozine — magazine v3
+ *
+ * Design intent: warm off-white folio, serif drop-cap typography, single-column
+ * reading flow. Read top-to-bottom like an actual issue, not a dashboard.
+ * Avoid card boxes, chip clouds, surface stacking — just type, rule lines,
+ * and one clear accent for editorial marks.
+ */
 
-  --serif:    "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  --sans:     -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
-  --mono:     ui-monospace, "SF Mono", "JetBrains Mono", "Menlo", monospace;
+:root {
+  /* surface */
+  --bg:           #FAFAF7;        /* warm off-white (the page itself) */
+  --surface:      #FFFFFF;        /* used sparingly for archive list rows */
+  --ink:          #1A1A1A;        /* charcoal — never pure black */
+  --ink-2:        #555555;        /* secondary copy */
+  --ink-3:        #888888;        /* meta */
+  --ink-4:        #B5B0A4;        /* very faint */
+  --rule:         #E5E1D8;        /* hairline between sections */
+  --rule-soft:    #EFEAE0;        /* even fainter rule */
+
+  /* accents (used very sparingly) */
+  --accent:       #B45309;        /* burnt sienna — kickers, "命中", numbers */
+  --accent-soft:  #C77C36;
+  --up:           #047857;        /* stars delta only */
+
+  /* type stack */
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans:  -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono:  ui-monospace, "SF Mono", "JetBrains Mono", "Menlo", monospace;
+
+  --reading-width: 720px;
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
   background: var(--bg);
-  color: var(--fg);
+  color: var(--ink);
   font-family: var(--sans);
   font-size: 16px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 a { color: inherit; text-decoration: none; }
-a:hover { text-decoration: underline; }
-
-.page {
-  max-width: 800px;
-  margin: 1.5rem auto;
-  padding: 2.75rem 3.25rem 3.25rem;
-  background: var(--bg);
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: var(--accent-soft);
 }
 
-/* Header */
+.page {
+  width: min(var(--reading-width), calc(100% - 48px));
+  margin: 0 auto;
+  padding: 36px 0 64px;
+}
+
+/* ============================================================
+ * Header
+ * ============================================================ */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding-bottom: 1.4rem;
+  padding-bottom: 22px;
+  margin-bottom: 40px;
   border-bottom: 1px solid var(--rule);
-  margin-bottom: 3rem;
 }
-.brand { display: flex; gap: 0.95rem; align-items: center; }
+.brand { display: flex; gap: 14px; align-items: center; }
 .mark {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: var(--fg);
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
+  background: var(--ink);
   color: var(--bg);
-  display: inline-flex; align-items: center; justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--serif);
   font-style: italic;
-  font-weight: 500;
-  font-size: 1.2rem;
+  font-weight: 600;
+  font-size: 1.4rem;
+  line-height: 1;
 }
 .brand-name {
   font-family: var(--serif);
-  font-weight: 500;
-  font-size: 1.25rem;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  font-size: 1.3rem;
   line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 .brand-meta {
-  font-size: 0.8rem;
-  color: var(--fg-4);
-  letter-spacing: 0.1em;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--ink-3);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   margin-top: 0.3rem;
 }
 .nav {
-  font-size: 0.82rem;
-  color: var(--fg-2);
-  letter-spacing: 0.12em;
+  display: flex;
+  gap: 22px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--ink-2);
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
 }
-.nav a { margin-left: 1.5rem; }
+.nav a:hover { color: var(--accent); text-decoration: none; }
 
-/* Hero */
-.hero { margin-bottom: 3.25rem; }
-.tag {
-  display: inline-block;
-  font-size: 0.75rem;
+/* ============================================================
+ * Kicker — small caps headline tag (the "Featured", "Archive" etc)
+ * ============================================================ */
+.kicker {
+  font-family: var(--mono);
+  font-size: 0.7rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--accent);
-  font-weight: 600;
-  padding-bottom: 1rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+/* ============================================================
+ * Hero (the one featured issue)
+ * ============================================================ */
+.hero {
+  padding: 8px 0 56px;
+  border-bottom: 1px solid var(--rule);
+}
+.hero-handle {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+  display: block;
+  margin-bottom: 14px;
 }
 .hero-title {
   font-family: var(--serif);
-  font-size: 3.6rem;
-  line-height: 1.05;
-  font-weight: 400;
-  letter-spacing: -0.025em;
-  margin: 0 0 1.1rem;
-  color: var(--fg-strong);
+  font-weight: 600;
+  font-size: clamp(3rem, 8vw, 4.6rem);
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  margin: 0 0 18px;
+  color: var(--ink);
 }
+.hero-title a { color: inherit; }
+.hero-title a:hover { color: var(--accent); text-decoration: none; }
 .hero-sub {
   font-family: var(--serif);
-  font-size: 1.3rem;
-  line-height: 1.4;
-  color: var(--fg-2);
   font-style: italic;
-  margin: 0 0 1.7rem;
-  max-width: 620px;
+  font-size: 1.2rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+  margin: 0 0 22px;
 }
-.hero-body {
-  font-size: 1.05rem;
-  line-height: 1.75;
-  color: #2c2c2c;
-  margin: 0 0 1.7rem;
-  max-width: 640px;
-}
-.hero-meta {
-  display: flex;
-  gap: 1.4rem;
-  font-size: 0.85rem;
-  color: var(--fg-3);
-  align-items: center;
-  flex-wrap: wrap;
+
+/* ============================================================
+ * Meta line — single inline row, mono, dot-separated
+ * Used by both hero and items.
+ * ============================================================ */
+.meta-line {
   font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ink-3);
   letter-spacing: 0.02em;
+  margin: 0 0 28px;
 }
-.meta-up { color: var(--up); font-weight: 600; }
-.meta-sources { color: var(--accent); }
+.meta-line > span + span::before {
+  content: "·";
+  margin: 0 0.6em;
+  color: var(--ink-4);
+}
+.meta-line .up { color: var(--up); font-weight: 600; }
+.meta-line .src { color: var(--ink-3); }
 
-/* Curator reason — "为什么推它" */
-.hero-reason {
-  font-size: 0.88rem;
+/* ============================================================
+ * Body copy (zh + en summary blocks)
+ * ============================================================ */
+.body {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+.body.en {
+  color: var(--ink-2);
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+/* ============================================================
+ * Reason — left rule + italic curator note + matched themes inline
+ * ============================================================ */
+.reason {
+  margin: 22px 0 0;
+  padding: 2px 0 2px 18px;
+  border-left: 3px solid var(--accent);
+}
+.reason p {
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
   line-height: 1.55;
-  color: var(--fg-3);
-  font-style: italic;
-  margin: -0.6rem 0 1.5rem;
-  padding-left: 0.85rem;
-  border-left: 2px solid var(--accent);
-  max-width: 580px;
+  color: var(--ink);
 }
-.item-reason {
-  font-size: 0.82rem;
-  line-height: 1.5;
-  color: var(--fg-3);
-  font-style: italic;
-  margin: -0.1rem 0 0.55rem;
-  padding-left: 0.65rem;
-  border-left: 2px solid var(--rule);
+.reason-match {
+  font-family: var(--mono) !important;
+  font-style: normal !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.05em;
+  color: var(--ink-3) !important;
+  margin-top: 8px !important;
+}
+.reason-match::before {
+  content: "命中 · ";
+  color: var(--accent);
+  font-weight: 700;
 }
 
-/* List */
+/* ============================================================
+ * Section divider
+ * ============================================================ */
 .section-label {
-  font-size: 0.8rem;
-  letter-spacing: 0.2em;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--fg-3);
-  margin: 0 0 1.75rem;
-  font-weight: 600;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 56px 0 0;
+  padding: 22px 0;
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 18px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
 }
-.section-label::after {
+.section-label::before {
   content: "";
-  flex: 1;
+  width: 28px;
   height: 1px;
-  background: var(--rule);
+  background: var(--accent);
 }
 
-.item {
+/* ============================================================
+ * Items — 1 column flow, no card boxes, no grid
+ * Layout: number left (32px), content right
+ * ============================================================ */
+.item-list {
   display: flex;
-  gap: 1.85rem;
-  padding: 1.4rem 0;
-  border-bottom: 1px solid var(--rule-soft);
+  flex-direction: column;
+}
+.item {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 28px;
+  padding: 40px 0;
+  border-bottom: 1px solid var(--rule);
 }
 .item:last-child { border-bottom: 0; }
 .item-num {
   font-family: var(--serif);
-  font-size: 1.3rem;
-  color: var(--accent);
   font-style: italic;
-  min-width: 1.75rem;
-  flex-shrink: 0;
-  padding-top: 0.15rem;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
-.item-body { flex: 1; }
 .item-title {
   font-family: var(--serif);
-  font-weight: 500;
-  font-size: 1.3rem;
-  margin: 0 0 0.5rem;
+  font-weight: 600;
+  font-size: 1.55rem;
+  line-height: 1.2;
+  margin: -4px 0 6px;
+  color: var(--ink);
   letter-spacing: -0.01em;
-  color: var(--fg-strong);
+  overflow-wrap: anywhere;
 }
-.item-title small {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  color: var(--fg-5);
-  font-style: normal;
-  margin-left: 0.6rem;
-  font-weight: 400;
-  letter-spacing: 0.02em;
+.item-title a { color: inherit; }
+.item-title a:hover { color: var(--accent); text-decoration: none; }
+.item-desc {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.98rem;
+  color: var(--ink-2);
+  line-height: 1.5;
+  margin: 0 0 14px;
 }
-.item-sum {
-  font-size: 1rem;
-  line-height: 1.65;
-  color: #444;
-  margin: 0 0 0.6rem;
-  max-width: 640px;
-}
-.item-sum.zh + .item-sum.en { margin-top: -0.1rem; color: #555; font-size: 0.95rem; }
-.item-meta {
-  font-size: 0.8rem;
-  color: var(--fg-4);
-  font-family: var(--mono);
-  letter-spacing: 0.02em;
-}
-.item-meta .dot { margin: 0 0.6rem; opacity: 0.5; }
+/* item meta-line uses the shared .meta-line styles above */
+.item .reason { margin-top: 16px; }
 
-/* Footer */
-.footer {
-  margin-top: 3rem;
-  padding-top: 1.5rem;
+/* ============================================================
+ * Colophon — "About this issue" block at the foot of the issue
+ * ============================================================ */
+.colophon {
+  margin-top: 56px;
+  padding: 26px 0 4px;
   border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.colophon-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 24px;
+  row-gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+.colophon dt {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-3);
+  font-weight: 600;
+  padding-top: 2px;
+}
+.colophon dd {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 0.96rem;
+  color: var(--ink);
+  line-height: 1.55;
+}
+.colophon dd .muted { color: var(--ink-3); }
+
+/* ============================================================
+ * Footer
+ * ============================================================ */
+.footer {
+  margin-top: 28px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 0.8rem;
-  color: var(--fg-4);
-  letter-spacing: 0.06em;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--ink-3);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .page { margin: 0; padding: 1.75rem 1.25rem 2rem; border-radius: 0; box-shadow: none; }
-  .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-  .nav { display: none; }
-  .hero-title { font-size: 2.4rem; }
-  .hero-sub { font-size: 1.1rem; }
-  .item { flex-direction: column; gap: 0.4rem; }
-  .item-num { padding-top: 0; }
+/* ============================================================
+ * Archive
+ * ============================================================ */
+.archive-hero {
+  padding: 10px 0 40px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 4px;
+}
+.archive-hero h1 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(2.4rem, 6vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 4px 0 14px;
+}
+.archive-hero p:last-child {
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.08rem;
+  color: var(--ink-2);
+  max-width: 520px;
+}
+.archive-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.archive-list li {
+  border-bottom: 1px solid var(--rule);
+}
+.archive-list a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 18px;
+  padding: 22px 0;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.archive-list a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+.archive-list small {
+  font-family: var(--mono);
+  color: var(--ink-3);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 400;
+}
+.archive-list a:hover small {
+  color: var(--accent);
+}
+.empty-state {
+  margin-top: 24px;
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-3);
+}
+
+/* ============================================================
+ * Responsive
+ * ============================================================ */
+@media (max-width: 700px) {
+  .page {
+    width: calc(100% - 32px);
+    padding: 24px 0 48px;
+  }
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 18px;
+    margin-bottom: 28px;
+  }
+  .nav { width: 100%; gap: 16px; }
+  .item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 32px 0;
+  }
+  .item-num { font-size: 1.6rem; }
+  .colophon-grid {
+    grid-template-columns: 1fr;
+    row-gap: 4px;
+  }
+  .colophon dt { padding-top: 14px; }
+  .colophon dd { padding-bottom: 6px; }
 }

@@ -2,6 +2,7 @@
 import "../../styles/global.css";
 import Header from "../../components/Header.astro";
 import Hero from "../../components/Hero.astro";
+import IssueOverview from "../../components/IssueOverview.astro";
 import Item from "../../components/Item.astro";
 import { listIssues, loadIssue } from "../../lib/issues.js";
 import { url } from "../../lib/url.js";
@@ -17,6 +18,7 @@ const issue = await loadIssue(`${slug}.json`);
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Octozine · {issue.slug}</title>
   <link rel="alternate" type="application/atom+xml" title="Octozine" href={url("feed.xml")} />
 </head>
@@ -25,7 +27,10 @@ const issue = await loadIssue(`${slug}.json`);
     <Header slug={issue.slug} languages={issue.meta.config.languages} />
     <Hero item={issue.hero} languages={issue.meta.config.languages} />
     <div class="section-label">Also worth a look · {issue.items.length} more</div>
-    {issue.items.map((it: any, i: number) => <Item item={it} num={i + 2} languages={issue.meta.config.languages} />)}
+    <section class="item-list">
+      {issue.items.map((it: any, i: number) => <Item item={it} num={i + 2} languages={issue.meta.config.languages} />)}
+    </section>
+    <IssueOverview meta={issue.meta} generatedAt={issue.generatedAt} />
     <footer class="footer">
       <span>Curated by Octozine</span>
       <span>Issue {issue.slug}</span>

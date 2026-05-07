@@ -5,12 +5,15 @@ interface SummarizedItem {
   description: string;
   stars: number;
   starsDelta?: number;
+  score?: number;
   language?: string;
   topics: string[];
   sources: string[];
   url: string;
   summary: { zh: string; en: string };
   reason: string;
+  matchedThemes?: string[];
+  matchedLanguages?: string[];
 }
 interface Props {
   item: SummarizedItem;
@@ -21,25 +24,33 @@ const { item, num, languages } = Astro.props;
 const showZh = languages.includes("zh");
 const showEn = languages.includes("en");
 const numStr = String(num).padStart(2, "0");
-const stats = `★ ${item.stars.toLocaleString()}${item.starsDelta !== undefined ? ` · ↑ ${item.starsDelta}` : ""}`;
-const metaParts = [
-  ...(item.language ? [item.language.toLowerCase()] : []),
-  ...item.topics.slice(0, 2),
-  `via ${item.sources.join(" · ")}`,
-];
+const matched = [
+  ...(item.matchedThemes ?? []),
+  ...(item.matchedLanguages ?? []),
+].slice(0, 4);
 ---
 <article class="item">
   <div class="item-num">{numStr}</div>
-  <div class="item-body">
+  <div class="item-content">
     <h3 class="item-title">
-      <a href={item.url}>{item.owner} / {item.repo}</a>
-      <small>{stats}</small>
+      <a href={item.url}>{item.owner}/{item.repo}</a>
     </h3>
-    {showZh && <p class="item-sum zh">{item.summary.zh}</p>}
-    {showEn && <p class="item-sum en">{item.summary.en}</p>}
-    {item.reason && <p class="item-reason">— {item.reason}</p>}
-    <div class="item-meta">
-      {metaParts.map((p, i) => <Fragment>{i > 0 && <span class="dot">·</span>}<span>{p}</span></Fragment>)}
+    {item.description && <p class="item-desc">{item.description}</p>}
+    <div class="meta-line">
+      <span>★ {item.stars.toLocaleString()}</span>
+      {item.starsDelta !== undefined && <span class="up">↑ {item.starsDelta.toLocaleString()}</span>}
+      {item.language && <span>{item.language}</span>}
+      <span class="src">via {item.sources.join(" · ")}</span>
     </div>
+    {showZh && <p class="body zh">{item.summary.zh}</p>}
+    {showEn && <p class="body en">{item.summary.en}</p>}
+    {item.reason && (
+      <blockquote class="reason">
+        <p>{item.reason}</p>
+        {matched.length > 0 && (
+          <p class="reason-match">{matched.join(" · ")}</p>
+        )}
+      </blockquote>
+    )}
   </div>
 </article>
