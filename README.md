@@ -138,7 +138,7 @@ https://yourname.github.io/octozine/
 
 ## 它生成什么
 
-每期从 ~150 个候选(Trending / Search / HN)里精选 **默认 5 个**项目(可在 `config/config.yaml` 改 `top_n`,例如 `top_n: 10` 看更多)。每个项目带:
+每期从 ~150 个候选(Trending / Search / HN)里精选 **默认 8 个**项目(可在 `config/config.yaml` 改 `top_n`,例如 `top_n: 12` 看更多,或 `top_n: 5` 走精选感)。每个项目带:
 
 - 中英双语摘要
 - 中文“为什么推它”
@@ -209,22 +209,22 @@ llm:
 | `ollama` | `llama3.1` | 本地 | - |
 | `custom` | - | 任何 OpenAI 兼容 endpoint | 自填 `base_url` + `model` |
 
-DeepSeek 是默认推荐,便宜、速度够用。每期常态下约 6 次 LLM 调用(rank + 5 summarize),首次或重建画像时额外 2 次(profile extract + critic)。
+DeepSeek 是默认推荐,便宜、速度够用。每期常态下约 9 次 LLM 调用(rank + 8 summarize),首次或重建画像时额外 2 次(profile extract + critic)。
 
-### 真实成本预估(按周跑)
+### 真实成本预估(按周跑,默认 `top_n: 8`)
 
-| Provider · model | 首次跑(8 调用) | 月度估算(4 期) | 备注 |
+| Provider · model | 首次跑(11 调用) | 月度估算(4 期) | 备注 |
 |---|---|---|---|
-| **DeepSeek `v4-flash`**(默认) | ≈ ¥0.05 | ≈ ¥0.2 | 性价比首选 |
-| **DeepSeek `v4-pro`** | ≈ ¥0.6(实测 18 分钟) | ≈ ¥2 | 质量更高但慢 5-10× |
-| **OpenAI `gpt-5.4-mini`** | ≈ $0.05 | ≈ $0.2 | |
-| **Qwen `qwen-plus`** | ≈ ¥0.05 | ≈ ¥0.2 | |
-| **Zhipu `glm-4.5-air`** | ≈ ¥0.05 | ≈ ¥0.2 | |
+| **DeepSeek `v4-flash`**(默认) | ≈ ¥0.07 | ≈ ¥0.3 | 性价比首选 |
+| **DeepSeek `v4-pro`** | ≈ ¥0.8(实测 `top_n: 5` 时 ¥0.6 / 18 分钟) | ≈ ¥3 | 质量更高但慢 5-10× |
+| **OpenAI `gpt-5.4-mini`** | ≈ $0.07 | ≈ $0.3 | |
+| **Qwen `qwen-plus`** | ≈ ¥0.07 | ≈ ¥0.3 | |
+| **Zhipu `glm-4.5-air`** | ≈ ¥0.07 | ≈ ¥0.3 | |
 | **Groq `llama-3.1-8b-instant`** | 免费档位通常够 | ≈ $0 | 推理极快 |
 | **Ollama** 本地 | $0 | $0 | 需要本地 GPU,JSON mode 部分兼容 |
 | Moonshot 128k context | 偏贵,以官方定价为准 | — | 128k 上下文 model 单价高 |
 
-**`v4-flash` 一年成本 < ¥3,按周自动跑成本可忽略。** 想把 `pro` / `gpt-5.5` 这种高端 model 当 default,看实测一年也就 ¥20-30,但首次跑会慢到 15-20 分钟。
+**`v4-flash` 一年成本 < ¥5,按周自动跑成本可忽略。** 想把 `pro` / `gpt-5.5` 这种高端 model 当 default,实测一年约 ¥30-40,但首次跑会慢到 20-25 分钟。把 `top_n` 调回 5 能把成本和时长都砍 ~30%。
 
 ---
 

@@ -89,6 +89,6 @@ outputs:
     enabled: false
     to: ""                              # recipient; SMTP creds in secrets (see docs/setup.md)
 
-top_n: 5
+top_n: 8
 hero_n: 1
 history_window: 4               # number of past issues whose repos are excluded from this run

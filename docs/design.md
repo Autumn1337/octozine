@@ -308,7 +308,7 @@ outputs:
   email:    { enabled: false, to: "" }        # smtp 在 secrets
 
 # 数量
-top_n: 5                        # 总展示数
+top_n: 8                        # 总展示数
 hero_n: 1                       # hero 区数
 history_window: 4               # 过去 N 期 issue 里出现过的不再推（与 schedule 单位无关，按"期"算）
 ```

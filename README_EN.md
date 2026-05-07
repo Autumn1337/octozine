@@ -138,7 +138,7 @@ After that, it runs every Monday at 09:00 UTC. Change the schedule in [docs/setu
 
 ## What It Publishes
 
-Each issue picks **5 projects by default** out of ~150 candidates (Trending / Search / HN) — bump it via `top_n` in `config/config.yaml` (e.g. `top_n: 10` to see more). Each pick comes with:
+Each issue picks **8 projects by default** out of ~150 candidates (Trending / Search / HN) — tune it via `top_n` in `config/config.yaml` (e.g. `top_n: 12` for breadth, `top_n: 5` for a tight curated feel). Each pick comes with:
 
 - bilingual zh/en summaries
 - a Chinese “why this one” reason
@@ -209,22 +209,22 @@ llm:
 | `ollama` | `llama3.1` | local | - |
 | `custom` | - | any OpenAI-compatible endpoint | set `base_url` + `model` |
 
-DeepSeek is the recommended default: cheap, fast enough, and good for summaries. A steady-state issue takes about 6 LLM calls (rank + 5 summarize); first runs or profile rebuilds add 2 more (profile extract + critic).
+DeepSeek is the recommended default: cheap, fast enough, and good for summaries. A steady-state issue takes about 9 LLM calls (rank + 8 summarize); first runs or profile rebuilds add 2 more (profile extract + critic).
 
-### Real-world cost estimate (weekly cron)
+### Real-world cost estimate (weekly cron, default `top_n: 8`)
 
-| Provider · model | First run (8 calls) | Monthly (4 issues) | Notes |
+| Provider · model | First run (11 calls) | Monthly (4 issues) | Notes |
 |---|---|---|---|
-| **DeepSeek `v4-flash`** (default) | ≈ ¥0.05 (~$0.007) | ≈ ¥0.2 (~$0.03) | Best price/quality |
-| **DeepSeek `v4-pro`** | ≈ ¥0.6 (measured, 18 min) | ≈ ¥2 (~$0.30) | Higher quality, 5-10× slower |
-| **OpenAI `gpt-5.4-mini`** | ≈ $0.05 | ≈ $0.20 | |
-| **Qwen `qwen-plus`** | ≈ ¥0.05 | ≈ ¥0.2 | |
-| **Zhipu `glm-4.5-air`** | ≈ ¥0.05 | ≈ ¥0.2 | |
+| **DeepSeek `v4-flash`** (default) | ≈ ¥0.07 (~$0.01) | ≈ ¥0.3 (~$0.04) | Best price/quality |
+| **DeepSeek `v4-pro`** | ≈ ¥0.8 (measured ¥0.6 at `top_n: 5`, 18 min) | ≈ ¥3 (~$0.40) | Higher quality, 5-10× slower |
+| **OpenAI `gpt-5.4-mini`** | ≈ $0.07 | ≈ $0.30 | |
+| **Qwen `qwen-plus`** | ≈ ¥0.07 | ≈ ¥0.3 | |
+| **Zhipu `glm-4.5-air`** | ≈ ¥0.07 | ≈ ¥0.3 | |
 | **Groq `llama-3.1-8b-instant`** | free tier usually enough | ≈ $0 | Very fast inference |
 | **Ollama** (local) | $0 | $0 | Local GPU; JSON mode partially supported |
 | Moonshot 128k context | priced per official rates | — | 128k-context models cost more per token |
 
-**With `v4-flash` you stay under ¥3 (~$0.40) per year.** Even running a premium model like `v4-pro` or `gpt-5.5` as default lands you around ¥20-30 / $3-4 per year, though first runs take 15-20 minutes.
+**With `v4-flash` you stay under ¥5 (~$0.70) per year.** Running a premium model like `v4-pro` or `gpt-5.5` as default lands around ¥30-40 / $4-6 per year, with first runs taking 20-25 minutes. Cutting `top_n` back to 5 trims both cost and runtime by ~30%.
 
 ---
 
