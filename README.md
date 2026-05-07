@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Autumn1337/octozine/actions"><img src="https://img.shields.io/badge/tests-80%20passing-brightgreen?style=flat-square" alt="tests"></a>
+  <a href="https://github.com/Autumn1337/octozine/actions"><img src="https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square" alt="tests"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="license"></a>
   <a href="https://autumn1337.github.io/octozine/"><img src="https://img.shields.io/badge/demo-live-success?style=flat-square" alt="demo"></a>
 </p>
@@ -84,7 +84,7 @@ llm:
   provider: deepseek
 ```
 
-把 `yourname` 换成你的 GitHub username,把 `provider` 换成你拿到 key 的那家。页面底部直接 **Commit changes** 到 main。
+把 `yourname` 换成你的 GitHub username,把 `provider` 换成你拿到 key 的那家(完整列表见下方 [LLM Provider](#llm-provider))。页面底部直接 **Commit changes** 到 main。
 
 ### 3. 添加 secret
 
@@ -113,7 +113,7 @@ llm:
 
 `Actions → Octozine Daily → Run workflow`
 
-3-4 分钟后,main 分支会多一个 commit:
+3-5 分钟后,main 分支会多一个 commit:
 
 ```text
 data: issue 2026-W19 [skip ci]
@@ -204,7 +204,7 @@ llm:
 | `ollama` | `llama3.1` | 本地 | - |
 | `custom` | - | 任何 OpenAI 兼容 endpoint | 自填 `base_url` + `model` |
 
-DeepSeek 是默认推荐,便宜、速度够用。每期大约 7 次 LLM 调用,按周运行成本很低。
+DeepSeek 是默认推荐,便宜、速度够用。每期常态下约 6 次 LLM 调用(rank + 5 summarize),首次或重建画像时额外 2 次(profile extract + critic)。按周运行成本很低。
 
 ---
 

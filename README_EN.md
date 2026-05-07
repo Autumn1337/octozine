@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Autumn1337/octozine/actions"><img src="https://img.shields.io/badge/tests-80%20passing-brightgreen?style=flat-square" alt="tests"></a>
+  <a href="https://github.com/Autumn1337/octozine/actions"><img src="https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square" alt="tests"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="license"></a>
   <a href="https://autumn1337.github.io/octozine/"><img src="https://img.shields.io/badge/demo-live-success?style=flat-square" alt="demo"></a>
 </p>
@@ -84,7 +84,7 @@ llm:
   provider: deepseek
 ```
 
-Replace `yourname` with your GitHub username. Change `provider` to whichever provider your key belongs to. Commit the file directly to main.
+Replace `yourname` with your GitHub username. Change `provider` to whichever provider your key belongs to (see the full table at [LLM Provider](#llm-provider) below). Commit the file directly to main.
 
 ### 3. Add the secret
 
@@ -113,7 +113,7 @@ Open:
 
 `Actions → Octozine Daily → Run workflow`
 
-After 3-4 minutes, a new commit should land on main:
+After 3-5 minutes, a new commit should land on main:
 
 ```text
 data: issue 2026-W19 [skip ci]
@@ -204,7 +204,7 @@ llm:
 | `ollama` | `llama3.1` | local | - |
 | `custom` | - | any OpenAI-compatible endpoint | set `base_url` + `model` |
 
-DeepSeek is the recommended default: cheap, fast enough, and good for summaries. Each issue uses roughly 7 LLM calls, so weekly runs are inexpensive.
+DeepSeek is the recommended default: cheap, fast enough, and good for summaries. A steady-state issue takes about 6 LLM calls (rank + 5 summarize); first runs or profile rebuilds add 2 more (profile extract + critic). Weekly runs are inexpensive.
 
 ---
 
