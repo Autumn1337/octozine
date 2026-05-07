@@ -1,7 +1,7 @@
 <h1 align="center">Octozine</h1>
 
 <p align="center">
-  <em>A folio of GitHub, curated weekly.</em>
+  <em>Octozine：Fork your own GitHub curator.</em>
   <br>
   Fork 一下,自动生成<strong>只属于你的</strong> GitHub 项目周刊。
 </p>
