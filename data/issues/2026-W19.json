@@ -1,49 +1,125 @@
 {
   "slug": "2026-W19",
-  "generatedAt": "2026-05-07T01:29:22.257Z",
+  "generatedAt": "2026-05-07T02:06:15.566Z",
   "hero": {
-    "owner": "ratatui-org",
-    "repo": "ratatui",
-    "description": "Rust TUI library",
-    "stars": 12400,
-    "starsDelta": 320,
-    "language": "rust",
-    "topics": [
-      "tui"
-    ],
-    "url": "https://github.com/ratatui-org/ratatui",
+    "owner": "rtk-ai",
+    "repo": "rtk",
+    "description": "CLI proxy that reduces LLM token consumption by 60-90% on common dev commands. Single Rust binary, zero dependencies",
+    "stars": 43068,
+    "starsDelta": 4651,
+    "language": "Rust",
+    "topics": [],
+    "url": "https://github.com/rtk-ai/rtk",
     "sources": [
       "trending"
     ],
-    "sourceMeta": {},
-    "score": 95,
-    "reason": "Rust + TUI 命中",
+    "sourceMeta": {
+      "trending": {
+        "window": "weekly"
+      }
+    },
+    "score": 98,
+    "reason": "CLI代理，大幅降低LLM token消耗，Rust实现，零依赖，性能敏感，极贴合开发者需求。",
     "summary": {
-      "zh": "用 Rust 写的终端 UI 库，被 gitui、atuin、helix 等新一代终端应用作为基础。",
-      "en": "A Rust library for building rich terminal UIs. It powers a growing wave of TUI tools including gitui, atuin, and helix."
+      "zh": "rtk 是减少开发命令 LLM token 消耗的 CLI 代理，节省 60-90%，单文件 Rust 二进制，零依赖。",
+      "en": "rtk is a command-line proxy designed to slash LLM token consumption for development commands, achieving reductions of 60-90%. It is delivered as a single Rust binary with zero external dependencies, making it incredibly lightweight and easy to deploy. By optimizing LLM interactions, rtk helps developers save on API costs and accelerate their terminal workflows, establishing itself as a must-have tool for efficient development."
     }
   },
   "items": [
     {
-      "owner": "astral-sh",
-      "repo": "uv",
-      "description": "Fast Python package manager",
-      "stars": 15200,
-      "starsDelta": 180,
-      "language": "rust",
-      "topics": [
-        "python"
-      ],
-      "url": "https://github.com/astral-sh/uv",
+      "owner": "warpdotdev",
+      "repo": "warp",
+      "description": "Warp is an agentic development environment, born out of the terminal.",
+      "stars": 55778,
+      "starsDelta": 15633,
+      "language": "Rust",
+      "topics": [],
+      "url": "https://github.com/warpdotdev/warp",
       "sources": [
         "trending"
       ],
-      "sourceMeta": {},
-      "score": 88,
-      "reason": "Rust + 工具链",
+      "sourceMeta": {
+        "trending": {
+          "window": "weekly"
+        }
+      },
+      "score": 95,
+      "reason": "基于终端的智能开发环境，融合AI与终端UI，Rust开发，高度匹配。",
       "summary": {
-        "zh": "用 Rust 重写的极速 Python 包管理器，目标取代 pip + venv + pip-tools。",
-        "en": "A drop-in replacement for pip and venv, written in Rust. 10–100× faster on common workflows."
+        "zh": "Warp 是一款基于 Rust 的智能终端开发环境，集成了 AI 驱动的命令建议和协作功能，可替代传统终端。",
+        "en": "Warp is a modern terminal application and development environment built in Rust, leveraging AI to create an agentic workspace directly in the command line. It seamlessly replaces traditional terminals like Terminal or iTerm2 by offering smart command completions, collaborative editing, and automated workflows, making it an indispensable tool for developers."
+      }
+    },
+    {
+      "owner": "farion1231",
+      "repo": "cc-switch",
+      "description": "A cross-platform desktop All-in-One assistant tool for Claude Code, Codex, OpenCode, openclaw & Gemini CLI.",
+      "stars": 61231,
+      "starsDelta": 5647,
+      "language": "Rust",
+      "topics": [],
+      "url": "https://github.com/farion1231/cc-switch",
+      "sources": [
+        "trending"
+      ],
+      "sourceMeta": {
+        "trending": {
+          "window": "weekly"
+        }
+      },
+      "score": 93,
+      "reason": "多AI编码助手桌面集成工具，Rust编写，直接服务于LLM工具链。",
+      "summary": {
+        "zh": "cc-switch 是一款跨平台桌面工具，整合 Claude Code、Codex、OpenCode、openclaw 与 Gemini CLI，支持在统一界面快速切换多种 AI 编程助手。",
+        "en": "cc-switch is a cross-platform desktop app that unifies CLI-based AI coding assistants like Claude Code, Codex, OpenCode, openclaw, and Gemini CLI into a single interface. It eliminates the need to manage multiple terminals by allowing quick switching between assistants, boosting developer efficiency. A standout feature is its seamless integration of diverse AI tools on the desktop."
+      }
+    },
+    {
+      "owner": "zed-industries",
+      "repo": "zed",
+      "description": "Code at the speed of thought – Zed is a high-performance, multiplayer code editor from the creators of Atom and Tree-sitter.",
+      "stars": 82020,
+      "starsDelta": 2002,
+      "language": "Rust",
+      "topics": [],
+      "url": "https://github.com/zed-industries/zed",
+      "sources": [
+        "trending"
+      ],
+      "sourceMeta": {
+        "trending": {
+          "window": "weekly"
+        }
+      },
+      "score": 92,
+      "reason": "高性能多人代码编辑器，Rust系统编程，极致性能，开发者利器。",
+      "summary": {
+        "zh": "Zed是由Atom和Tree-sitter团队打造的高性能协作代码编辑器，基于Rust，以思维速度编程，主打实时多人编辑，是传统编辑器的现代替代品。",
+        "en": "Zed is a high-performance, multiplayer code editor created by the team behind Atom and Tree-sitter. Built in Rust, it emphasizes speed and collaboration, enabling developers to code at the speed of thought. Its standout feature is real-time multiplayer editing, allowing multiple users to work together seamlessly. Zed aims to replace slower editors and provides a modern, fast alternative for coding workflows."
+      }
+    },
+    {
+      "owner": "1jehuang",
+      "repo": "jcode",
+      "description": "Coding Agent Harness",
+      "stars": 4530,
+      "starsDelta": 3332,
+      "language": "Rust",
+      "topics": [],
+      "url": "https://github.com/1jehuang/jcode",
+      "sources": [
+        "trending"
+      ],
+      "sourceMeta": {
+        "trending": {
+          "window": "weekly"
+        }
+      },
+      "score": 90,
+      "reason": "编码代理框架，Rust实现，面向LLM工具，低层级高性能。",
+      "summary": {
+        "zh": "jcode是一个开源AI编码代理框架，支持自主代码生成与修改，相比传统辅助工具更灵活，可接入多种大模型，并具备实时迭代优化能力。",
+        "en": "jcode is an open-source harness for AI coding agents that enables autonomous code generation, editing, and task execution. Unlike traditional code assistants that merely suggest snippets, it provides a flexible framework supporting multiple large language models and a terminal-based interface. A standout feature is its iterative refinement loop, which continuously improves code through automated testing and feedback, making it a powerful tool for developers seeking agentic coding workflows. With 4,500 stars, it's built in Rust for performance and reliability."
       }
     }
   ],
@@ -56,13 +132,25 @@
       ]
     },
     "profile": {
-      "themes": [],
-      "languages": [],
-      "excludeThemes": [],
-      "notes": ""
+      "themes": [
+        "LLM tooling and inference engines",
+        "Terminal UI / developer tools",
+        "Rust systems programming"
+      ],
+      "languages": [
+        "rust",
+        "python",
+        "go",
+        "typescript"
+      ],
+      "excludeThemes": [
+        "blockchain / web3",
+        "marketing / SEO tools"
+      ],
+      "notes": "Prefers low-level, performance-sensitive, developer-focused projects.\nNot interested in SaaS or marketing tooling.\n"
     },
     "sourceCounts": {
-      "trending": 2
+      "trending": 5
     }
   }
 }
