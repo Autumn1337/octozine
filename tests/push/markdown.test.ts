@@ -58,6 +58,29 @@ describe("renderTelegramMarkdown", () => {
     expect(out).toContain("ratatui\\-org/ratatui");
     expect(out).toContain("rust\\-lang/rust");
     expect(out).toContain("https://github.com/ratatui-org/ratatui");
+    // typical issue must fit comfortably under Telegram's 4096-char limit
+    expect(out.length).toBeLessThanOrEqual(4096);
+  });
+
+  it("truncates long issues with a '还有 N 条' tail", () => {
+    // Build an issue with 30 items, each carrying a long reason — well over 4096 chars
+    const longItem = (n: number) => ({
+      ...fixture.items[0]!,
+      owner: `org${n}`, repo: `repo${n}`,
+      url: `https://github.com/org${n}/repo${n}`,
+      reason: "这是一个很长的中文 reason,用于人为撑大整个消息的长度,超过 telegram 4096 字限制。".repeat(3),
+      summary: {
+        zh: "中文摘要内容".repeat(15),
+        en: "English summary content ".repeat(15),
+      },
+    });
+    const fat: IssueData = {
+      ...fixture,
+      items: Array.from({ length: 30 }, (_, n) => longItem(n)),
+    };
+    const out = renderTelegramMarkdown(fat);
+    expect(out.length).toBeLessThanOrEqual(4096);
+    expect(out).toMatch(/还有 \d+ 条/);
   });
 });
 

@@ -82,10 +82,18 @@ export type HnOpts = {
   minScore: number;
   token?: string | undefined;
   hitsPerPage?: number;
+  /** Max repos to enrich via /repos API. Default 15 to stay well under
+   * GitHub's 60 req/h anonymous limit when combined with other fetchers. */
+  maxEnrich?: number;
+  /** Concurrency for the per-repo enrichment fan-out. Default 5. */
+  enrichConcurrency?: number;
 };
 
 export async function fetchHn(opts: HnOpts): Promise<Candidate[]> {
   const hitsPerPage = opts.hitsPerPage ?? 50;
+  const maxEnrich = opts.maxEnrich ?? 15;
+  const enrichConcurrency = opts.enrichConcurrency ?? 5;
+
   const url =
     `https://hn.algolia.com/api/v1/search?query=github.com&tags=story` +
     `&numericFilters=points%3E${opts.minScore}&hitsPerPage=${hitsPerPage}`;
@@ -94,6 +102,7 @@ export async function fetchHn(opts: HnOpts): Promise<Candidate[]> {
   const json = (await res.json()) as { hits?: AlgoliaHit[] };
   const hits = parseHnHits(json);
 
+  // Dedupe within HN, keep highest-score hit per repo.
   const byRepo = new Map<string, HnHit>();
   for (const h of hits) {
     const k = `${h.owner}/${h.repo}`.toLowerCase();
@@ -101,33 +110,51 @@ export async function fetchHn(opts: HnOpts): Promise<Candidate[]> {
     if (!prev || h.hnScore > prev.hnScore) byRepo.set(k, h);
   }
 
+  // Take top-N by HN score before enrichment so we don't burn GitHub
+  // API quota on low-signal hits when GH_TOKEN isn't set (60 req/h limit).
+  const topHits = Array.from(byRepo.values())
+    .sort((a, b) => b.hnScore - a.hnScore)
+    .slice(0, maxEnrich);
+
   const headers: Record<string, string> = {
     "User-Agent": "octozine/0.1",
     Accept: "application/vnd.github+json",
   };
   if (opts.token) headers.Authorization = `Bearer ${opts.token}`;
 
-  const out: Candidate[] = [];
-  for (const h of byRepo.values()) {
-    let meta: RepoMeta | null = null;
-    try {
-      const r = await fetch(`https://api.github.com/repos/${h.owner}/${h.repo}`, { headers });
-      if (r.ok) meta = parseRepoMeta((await r.json()) as RepoApi);
-    } catch {
-      // best-effort enrichment
+  // Enrich in bounded-concurrency batches via a worker pool.
+  // Sequential previously meant 50 sequential requests — this drops it to
+  // ceil(maxEnrich / enrichConcurrency) round trips' worth of latency.
+  const enriched: Array<Candidate | null> = new Array(topHits.length).fill(null);
+  let next = 0;
+  const worker = async (): Promise<void> => {
+    while (true) {
+      const idx = next++;
+      if (idx >= topHits.length) return;
+      const h = topHits[idx]!;
+      let meta: RepoMeta | null = null;
+      try {
+        const r = await fetch(`https://api.github.com/repos/${h.owner}/${h.repo}`, { headers });
+        if (r.ok) meta = parseRepoMeta((await r.json()) as RepoApi);
+      } catch {
+        // best-effort enrichment — skip unreachable repos
+      }
+      if (!meta) continue;
+      enriched[idx] = {
+        owner: h.owner,
+        repo: h.repo,
+        description: meta.description,
+        stars: meta.stars,
+        ...(meta.language ? { language: meta.language } : {}),
+        topics: meta.topics,
+        url: meta.url,
+        sources: ["hn"],
+        sourceMeta: { hn: { score: h.hnScore, story_id: h.objectId, story_url: h.hnUrl } },
+      };
     }
-    if (!meta) continue;
-    out.push({
-      owner: h.owner,
-      repo: h.repo,
-      description: meta.description,
-      stars: meta.stars,
-      ...(meta.language ? { language: meta.language } : {}),
-      topics: meta.topics,
-      url: meta.url,
-      sources: ["hn"],
-      sourceMeta: { hn: { score: h.hnScore, story_id: h.objectId, story_url: h.hnUrl } },
-    });
-  }
-  return out;
+  };
+  await Promise.all(
+    Array.from({ length: Math.max(1, Math.min(enrichConcurrency, topHits.length)) }, worker),
+  );
+  return enriched.filter((c): c is Candidate => c !== null);
 }

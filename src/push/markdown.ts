@@ -12,11 +12,33 @@ const fmtItem = (n: number, i: SummarizedItem): string =>
   `_${escapeMarkdownV2(i.reason)}_\n` +
   i.url;
 
+// Telegram sendMessage hard-limits text to 4096 chars. With topN = 5 a typical
+// issue is ~1500–2000 chars, but topN = 10 + bilingual reasons can blow past it.
+// We cap at 4000 (96 char buffer) and append a "...还有 N 条" tail.
+const TELEGRAM_MAX = 4000;
+
 export function renderTelegramMarkdown(issue: IssueData): string {
   const head = `*Octozine · ${escapeMarkdownV2(issue.slug)}*`;
   const hero = fmtItem(1, issue.hero);
-  const rest = issue.items.map((it, idx) => fmtItem(idx + 2, it)).join("\n\n");
-  return [head, hero, rest].filter(Boolean).join("\n\n");
+
+  // Append items one at a time, stopping before we exceed the budget.
+  const blocks: string[] = [head, hero];
+  let runningLen = head.length + hero.length + 4; // +4 for separator "\n\n"s
+  let dropped = 0;
+  for (let i = 0; i < issue.items.length; i++) {
+    const item = issue.items[i]!;
+    const block = fmtItem(i + 2, item);
+    if (runningLen + 2 + block.length > TELEGRAM_MAX) {
+      dropped = issue.items.length - i;
+      break;
+    }
+    blocks.push(block);
+    runningLen += 2 + block.length;
+  }
+  if (dropped > 0) {
+    blocks.push(`_…还有 ${dropped} 条,见站点完整版。_`);
+  }
+  return blocks.join("\n\n");
 }
 
 const escapeHtml = (s: string) =>
