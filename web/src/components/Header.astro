@@ -1,4 +1,6 @@
 ---
+import { url } from "../lib/url.js";
+
 interface Props {
   slug: string;
   languages: string[];
@@ -15,7 +17,7 @@ const langLabel = languages.map(l => l === "zh" ? "中" : l.toUpperCase()).join(
     </div>
   </div>
   <nav class="nav">
-    <a href="/">Latest</a>
-    <a href="/archive/">Archive</a>
+    <a href={url("/")}>Latest</a>
+    <a href={url("/archive/")}>Archive</a>
   </nav>
 </header>

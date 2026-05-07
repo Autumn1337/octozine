@@ -1,6 +1,7 @@
 ---
 import "../../styles/global.css";
 import { listIssues } from "../../lib/issues.js";
+import { url } from "../../lib/url.js";
 
 const files = await listIssues();
 const slugs = files.map(f => f.replace(/\.json$/, ""));
@@ -21,14 +22,14 @@ const slugs = files.map(f => f.replace(/\.json$/, ""));
         </div>
       </div>
       <nav class="nav">
-        <a href="/">Latest</a>
+        <a href={url("/")}>Latest</a>
       </nav>
     </header>
     {slugs.length === 0 ? <p>No issues yet.</p> : (
       <ul style="list-style:none; padding:0;">
         {slugs.map(slug => (
           <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--rule-soft);">
-            <a href={`/archive/${slug}/`} class="item-title" style="font-family: var(--serif);">{slug}</a>
+            <a href={url(`/archive/${slug}/`)} class="item-title" style="font-family: var(--serif);">{slug}</a>
           </li>
         ))}
       </ul>
