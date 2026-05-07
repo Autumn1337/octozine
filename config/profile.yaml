@@ -1,0 +1,12 @@
+# Hand-edit freely. M6 will add auto-generation from your starred repos.
+themes:
+  - "LLM tooling and inference engines"
+  - "Terminal UI / developer tools"
+  - "Rust systems programming"
+languages: [rust, python, go, typescript]
+exclude_themes:
+  - "blockchain / web3"
+  - "marketing / SEO tools"
+notes: |
+  Prefers low-level, performance-sensitive, developer-focused projects.
+  Not interested in SaaS or marketing tooling.

@@ -1,0 +1,27 @@
+# Octozine config — change values below to make this fork yours.
+
+schedule: weekly                # weekly | daily | "0 9 * * 1" cron
+languages: [zh, en]
+github_username: yourname
+
+profile:
+  regenerate: false             # true on next run = re-generate profile.yaml from starred
+
+llm:
+  base_url: https://api.deepseek.com
+  model: deepseek-chat
+  # API key goes in GitHub Secrets as LLM_API_KEY
+
+sources:
+  trending:
+    enabled: true
+    langs: [rust, python, typescript, go]
+    window: weekly
+  # search / hn / events come in M4
+
+outputs:
+  pages: { enabled: true }
+
+top_n: 5
+hero_n: 1
+history_window: 4               # number of past issues whose repos are excluded from this run
