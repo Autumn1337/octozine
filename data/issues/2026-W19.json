@@ -1,11 +1,11 @@
 {
   "slug": "2026-W19",
-  "generatedAt": "2026-05-07T03:09:54.016Z",
+  "generatedAt": "2026-05-07T03:18:48.120Z",
   "hero": {
     "owner": "rtk-ai",
     "repo": "rtk",
     "description": "CLI proxy that reduces LLM token consumption by 60-90% on common dev commands. Single Rust binary, zero dependencies",
-    "stars": 43112,
+    "stars": 43120,
     "starsDelta": 4651,
     "language": "Rust",
     "topics": [],
@@ -19,10 +19,10 @@
       }
     },
     "score": 98,
-    "reason": "RTK是Rust CLI代理，大幅减少LLM令牌消耗，极度匹配。",
+    "reason": "Rust编写的LLM令牌消耗代理，性能优异且专注开发者工具。",
     "summary": {
-      "zh": "这是一个CLI代理，可将常见开发命令的LLM令牌消耗降低60-90%，单一Rust二进制文件，零依赖，效率极高。",
-      "en": "RTK is a CLI proxy that reduces LLM token consumption by 60-90% on common dev commands. It is a single Rust binary with zero dependencies, offering a lightweight and efficient solution for developers to save on API costs."
+      "zh": "一个命令行代理，可将常见开发命令中的LLM令牌消耗减少60-90%。单一Rust二进制文件，零依赖。",
+      "en": "rtk is a CLI proxy that reduces LLM token consumption by 60-90% on common dev commands. Written in Rust, it is distributed as a single binary with zero dependencies. With over 43,000 GitHub stars, it is a popular open-source tool for cutting AI API costs without sacrificing functionality. It works transparently by intercepting API calls and applying compression to minimize token usage while preserving output quality."
     }
   },
   "items": [
@@ -30,7 +30,7 @@
       "owner": "warpdotdev",
       "repo": "warp",
       "description": "Warp is an agentic development environment, born out of the terminal.",
-      "stars": 55829,
+      "stars": 55832,
       "starsDelta": 15633,
       "language": "Rust",
       "topics": [],
@@ -44,21 +44,21 @@
         }
       },
       "score": 95,
-      "reason": "Warp是Rust编写的代理开发环境，完美契合终端UI和开发者工具主题。",
+      "reason": "Rust构建的智能终端开发环境，契合终端UI和LLM工具主题。",
       "summary": {
-        "zh": "Warp 是一个基于人工智能的现代化终端，旨在取代传统终端，提供智能命令补全和协作功能。",
-        "en": "Warp is an AI-powered modern terminal that replaces traditional terminals, offering smart command completions and collaboration features as an agentic development environment."
+        "zh": "Warp 是一款基于终端的智能开发环境，通过 AI 代理提升命令行体验，替代传统终端。",
+        "en": "Warp is an agentic development environment built on the terminal, enhancing command-line workflows with AI-driven assistance. It replaces traditional terminals with features like smart autocomplete, natural language commands, and collaborative editing, making development faster and more intuitive."
       }
     },
     {
-      "owner": "junhoyeo",
-      "repo": "tokscale",
-      "description": "🛰️ A CLI tool for tracking token usage from OpenCode, Claude Code, 🦞OpenClaw (Clawdbot/Moltbot), Pi, Codex, Gemini, Cursor, AmpCode, Factory Droid, Kimi, and more! • 🏅Global Leaderboard + 2D/3D Contributions Graph",
-      "stars": 2647,
-      "starsDelta": 271,
+      "owner": "farion1231",
+      "repo": "cc-switch",
+      "description": "A cross-platform desktop All-in-One assistant tool for Claude Code, Codex, OpenCode, openclaw & Gemini CLI.",
+      "stars": 61356,
+      "starsDelta": 5647,
       "language": "Rust",
       "topics": [],
-      "url": "https://github.com/junhoyeo/tokscale",
+      "url": "https://github.com/farion1231/cc-switch",
       "sources": [
         "trending"
       ],
@@ -68,17 +68,17 @@
         }
       },
       "score": 92,
-      "reason": "Tokscale是Rust CLI跟踪AI令牌使用，完美匹配LLM工具。",
+      "reason": "跨平台AI助手工具，Rust实现，专注LLM和开发者效率。",
       "summary": {
-        "zh": "一个追踪多种AI编程工具Token使用量的CLI工具，配有全球排行榜和3D贡献图。",
-        "en": "tokscale is a Rust-based CLI tool that tracks token usage from popular AI coding assistants like OpenCode, Claude Code, and Cursor. It features a global leaderboard and 2D/3D contribution graphs, making it easy to monitor and compare usage across different platforms."
+        "zh": "一个跨平台桌面全能助手，整合Claude Code、Codex、OpenCode等AI CLI工具，提供统一操作界面。",
+        "en": "cc-switch is a cross-platform desktop all-in-one assistant that unifies multiple AI CLI tools like Claude Code, Codex, OpenCode, openclaw, and Gemini CLI into a single interface, simplifying workflow management and tool switching."
       }
     },
     {
       "owner": "1jehuang",
       "repo": "jcode",
       "description": "Coding Agent Harness",
-      "stars": 4556,
+      "stars": 4559,
       "starsDelta": 3332,
       "language": "Rust",
       "topics": [],
@@ -92,21 +92,21 @@
         }
       },
       "score": 90,
-      "reason": "jcode是Rust编码代理工具，直接匹配LLM工具和开发者工具。",
+      "reason": "Rust编写的编码代理工具，直接匹配LLM工具和Rust系统编程。",
       "summary": {
-        "zh": "JCode 是一个用 Rust 编写的编码代理框架，旨在替代传统编码助手，支持多语言代码生成与实时调试。",
-        "en": "JCode is a coding agent harness written in Rust, designed to replace traditional coding assistants with multi-language code generation and real-time debugging, offering a seamless integration for developers."
+        "zh": "jcode是一个用Rust编写的编码代理框架，旨在简化和优化AI编码助手的工作流程，其突出的性能优势使其成为LangChain等技术栈的有力替代方案。",
+        "en": "jcode is a Rust-based coding agent harness designed to streamline and optimize AI coding assistant workflows, offering high performance as a notable alternative to frameworks like LangChain."
       }
     },
     {
-      "owner": "farion1231",
-      "repo": "cc-switch",
-      "description": "A cross-platform desktop All-in-One assistant tool for Claude Code, Codex, OpenCode, openclaw & Gemini CLI.",
-      "stars": 61339,
-      "starsDelta": 5647,
+      "owner": "zed-industries",
+      "repo": "zed",
+      "description": "Code at the speed of thought – Zed is a high-performance, multiplayer code editor from the creators of Atom and Tree-sitter.",
+      "stars": 82026,
+      "starsDelta": 2002,
       "language": "Rust",
       "topics": [],
-      "url": "https://github.com/farion1231/cc-switch",
+      "url": "https://github.com/zed-industries/zed",
       "sources": [
         "trending"
       ],
@@ -116,10 +116,10 @@
         }
       },
       "score": 88,
-      "reason": "cc-switch是Rust跨平台AI助手，契合LLM工具和终端UI。",
+      "reason": "高性能Rust代码编辑器，精准匹配终端UI和开发者工具。",
       "summary": {
-        "zh": "跨平台桌面一体式助手，整合Claude Code、Codex等CLI工具，支持多模型切换与配置管理。",
-        "en": "A cross-platform desktop all-in-one assistant tool that integrates multiple CLI tools including Claude Code, Codex, OpenCode, openclaw, and Gemini CLI. It allows users to switch between different AI coding assistants seamlessly, manage configurations, and streamline workflows. Notable feature: provides a unified interface for multiple command-line AI tools, eliminating the need to switch between separate terminals or contexts."
+        "zh": "Zed 是由 Atom 和 Tree-sitter 创建者开发的 Rust 高性能多人代码编辑器，旨在替代传统编辑器。其突出特点是低延迟实时协作，支持多人同时编辑和共享光标。",
+        "en": "Zed is a high-performance multiplayer code editor from the creators of Atom and Tree-sitter, designed to replace traditional editors like VS Code. Its standout feature is low-latency real-time collaboration, allowing multiple developers to edit simultaneously with shared cursors and workspace."
       }
     }
   ],
