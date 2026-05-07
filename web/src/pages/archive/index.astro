@@ -1,0 +1,38 @@
+---
+import "../../styles/global.css";
+import { listIssues } from "../../lib/issues.js";
+
+const files = await listIssues();
+const slugs = files.map(f => f.replace(/\.json$/, ""));
+---
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Octozine · Archive</title>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div class="brand">
+        <div class="mark">o</div>
+        <div>
+          <div class="brand-name">Octozine</div>
+          <div class="brand-meta">Archive</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="/">Latest</a>
+      </nav>
+    </header>
+    {slugs.length === 0 ? <p>No issues yet.</p> : (
+      <ul style="list-style:none; padding:0;">
+        {slugs.map(slug => (
+          <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--rule-soft);">
+            <a href={`/archive/${slug}/`} class="item-title" style="font-family: var(--serif);">{slug}</a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </main>
+</body>
+</html>

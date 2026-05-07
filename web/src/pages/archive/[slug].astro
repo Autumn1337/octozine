@@ -1,0 +1,33 @@
+---
+import "../../styles/global.css";
+import Header from "../../components/Header.astro";
+import Hero from "../../components/Hero.astro";
+import Item from "../../components/Item.astro";
+import { listIssues, loadIssue } from "../../lib/issues.js";
+
+export async function getStaticPaths() {
+  const files = await listIssues();
+  return files.map(f => ({ params: { slug: f.replace(/\.json$/, "") } }));
+}
+
+const { slug } = Astro.params as { slug: string };
+const issue = await loadIssue(`${slug}.json`);
+---
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Octozine · {issue.slug}</title>
+</head>
+<body>
+  <main class="page">
+    <Header slug={issue.slug} languages={issue.meta.config.languages} />
+    <Hero item={issue.hero} languages={issue.meta.config.languages} />
+    <div class="section-label">Also worth a look · {issue.items.length} more</div>
+    {issue.items.map((it: any, i: number) => <Item item={it} num={i + 2} languages={issue.meta.config.languages} />)}
+    <footer class="footer">
+      <span>Curated by Octozine</span>
+      <span>Issue {issue.slug}</span>
+    </footer>
+  </main>
+</body>
+</html>

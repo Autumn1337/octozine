@@ -1,0 +1,36 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Item from "../components/Item.astro";
+import { loadLatest } from "../lib/issues.js";
+
+const issue = await loadLatest();
+---
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{issue ? `Octozine · ${issue.slug}` : "Octozine"}</title>
+</head>
+<body>
+  <main class="page">
+    {issue === null ? (
+      <p>No issues yet. Run <code>npm run pipeline</code> first.</p>
+    ) : (
+      <>
+        <Header slug={issue.slug} languages={issue.meta.config.languages} />
+        <section class="hero-wrap">
+          <Hero item={issue.hero} languages={issue.meta.config.languages} />
+        </section>
+        <div class="section-label">Also worth a look · {issue.items.length} more</div>
+        {issue.items.map((it: any, i: number) => <Item item={it} num={i + 2} languages={issue.meta.config.languages} />)}
+        <footer class="footer">
+          <span>Curated by Octozine</span>
+          <span>Issue {issue.slug}</span>
+        </footer>
+      </>
+    )}
+  </main>
+</body>
+</html>
