@@ -1,0 +1,7 @@
+{
+  "ranking": [
+    { "i": 0, "score": 92, "reason": "Rust 系统编程，命中 themes 中的 Rust 偏好。" },
+    { "i": 2, "score": 85, "reason": "终端 TUI 工具，命中 themes。" },
+    { "i": 1, "score": 40, "reason": "前端框架，与 exclude 相关性较低。" }
+  ]
+}
