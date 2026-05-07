@@ -1,17 +1,36 @@
-# Octozine · A weekly folio of GitHub
+<h1 align="center">Octozine</h1>
 
-[中文](./README.md) · [English](./README_EN.md)
+<p align="center">
+  <em>A folio of GitHub, curated weekly.</em>
+  <br>
+  A self-deployable, AI-augmented GitHub discovery tool · Fork it, get a weekly digest <strong>tailored to you</strong>
+</p>
 
-> A self-deployable, AI-augmented GitHub discovery tool.
-> Fork it, then get a weekly GitHub digest **tailored to you**.
+<p align="center">
+  <a href="./README.md">中文</a> · <a href="./README_EN.md">English</a>
+</p>
 
-[![demo](https://img.shields.io/badge/demo-live-success?style=flat-square)](https://autumn1337.github.io/octozine/)
-[![tests](https://img.shields.io/badge/tests-80%20passing-brightgreen?style=flat-square)](https://github.com/Autumn1337/octozine/actions)
-[![license](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](./LICENSE)
+<p align="center">
+  <a href="https://autumn1337.github.io/octozine/">
+    <img src="https://raw.githubusercontent.com/Autumn1337/octozine/main/docs/images/hero.png" width="720" alt="Octozine — magazine-style GitHub Pages site">
+  </a>
+</p>
 
-![hero](https://raw.githubusercontent.com/Autumn1337/octozine/main/docs/images/hero.png)
+<p align="center">
+  <a href="https://github.com/Autumn1337/octozine/actions"><img src="https://img.shields.io/badge/tests-80%20passing-brightgreen?style=flat-square" alt="tests"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="license"></a>
+  <a href="https://autumn1337.github.io/octozine/"><img src="https://img.shields.io/badge/demo-live-success?style=flat-square" alt="demo"></a>
+</p>
 
-→ Live demo: **[autumn1337.github.io/octozine](https://autumn1337.github.io/octozine/)**
+<p align="center">
+  <a href="https://autumn1337.github.io/octozine/">▶&nbsp;Live&nbsp;demo</a>
+  &nbsp;·&nbsp;
+  <a href="#5-minutes-to-first-issue">⚡&nbsp;Quickstart</a>
+  &nbsp;·&nbsp;
+  <a href="./docs/design.md">📐&nbsp;Design</a>
+  &nbsp;·&nbsp;
+  <a href="./docs/setup.md">🔧&nbsp;Setup</a>
+</p>
 
 ---
 

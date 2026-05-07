@@ -1,17 +1,36 @@
-# Octozine · GitHub 项目周刊
+<h1 align="center">Octozine</h1>
 
-[中文](./README.md) · [English](./README_EN.md)
+<p align="center">
+  <em>A folio of GitHub, curated weekly.</em>
+  <br>
+  自部署、AI 增强的 GitHub 项目发现工具 · Fork 一下,每周一份<strong>只为你定制</strong>的项目周刊
+</p>
 
-> 自部署、AI 增强的 GitHub 项目发现工具。
-> Fork 一下,每周自动给你一份**只为你定制的** GitHub 项目周刊。
+<p align="center">
+  <a href="./README.md">中文</a> · <a href="./README_EN.md">English</a>
+</p>
 
-[![demo](https://img.shields.io/badge/demo-live-success?style=flat-square)](https://autumn1337.github.io/octozine/)
-[![tests](https://img.shields.io/badge/tests-80%20passing-brightgreen?style=flat-square)](https://github.com/Autumn1337/octozine/actions)
-[![license](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](./LICENSE)
+<p align="center">
+  <a href="https://autumn1337.github.io/octozine/">
+    <img src="https://raw.githubusercontent.com/Autumn1337/octozine/main/docs/images/hero.png" width="720" alt="Octozine — magazine-style GitHub Pages site">
+  </a>
+</p>
 
-![hero](https://raw.githubusercontent.com/Autumn1337/octozine/main/docs/images/hero.png)
+<p align="center">
+  <a href="https://github.com/Autumn1337/octozine/actions"><img src="https://img.shields.io/badge/tests-80%20passing-brightgreen?style=flat-square" alt="tests"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="license"></a>
+  <a href="https://autumn1337.github.io/octozine/"><img src="https://img.shields.io/badge/demo-live-success?style=flat-square" alt="demo"></a>
+</p>
 
-→ Live demo: **[autumn1337.github.io/octozine](https://autumn1337.github.io/octozine/)**
+<p align="center">
+  <a href="https://autumn1337.github.io/octozine/">▶&nbsp;Live&nbsp;demo</a>
+  &nbsp;·&nbsp;
+  <a href="#5-分钟跑起来">⚡&nbsp;5&nbsp;分钟跑起来</a>
+  &nbsp;·&nbsp;
+  <a href="./docs/design.md">📐&nbsp;Design</a>
+  &nbsp;·&nbsp;
+  <a href="./docs/setup.md">🔧&nbsp;Setup</a>
+</p>
 
 ---
 
