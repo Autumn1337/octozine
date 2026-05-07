@@ -34,11 +34,11 @@ git push
 
 | `provider:` | base_url | default model | notes |
 |---|---|---|---|
-| `openai` | `https://api.openai.com/v1` | `gpt-4o-mini` | |
+| `openai` | `https://api.openai.com/v1` | `gpt-5.4-mini` | |
 | `deepseek` | `https://api.deepseek.com` | `deepseek-v4-flash` | cheap and fast; use `model: deepseek-v4-pro` for higher quality |
 | `moonshot` | `https://api.moonshot.cn/v1` | `moonshot-v1-128k` | Kimi (China) |
 | `qwen` | `https://dashscope.aliyuncs.com/compatible-mode/v1` | `qwen-plus` | Alibaba DashScope (China) |
-| `zhipu` | `https://open.bigmodel.cn/api/paas/v4` | `glm-4.5` | Zhipu / GLM (China) |
+| `zhipu` | `https://open.bigmodel.cn/api/paas/v4` | `glm-4.5-air` | Zhipu / GLM (China); `glm-4.5` itself is being deprecated |
 | `groq` | `https://api.groq.com/openai/v1` | `llama-3.1-8b-instant` | very fast inference |
 | `ollama` | `http://localhost:11434/v1` | `llama3.1` | local; JSON mode is best-effort |
 

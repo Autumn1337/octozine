@@ -44,7 +44,7 @@ describe("chat()", () => {
     await chat({
       baseUrl: "https://api.openai.com/v1/",
       apiKey: "k",
-      model: "gpt-4o-mini",
+      model: "gpt-5.4-mini",
       messages: [{ role: "user", content: "x" }],
     });
   });

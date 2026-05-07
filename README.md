@@ -50,7 +50,7 @@
 | Moonshot (Kimi) | [platform.moonshot.cn](https://platform.moonshot.cn) | 中国 |
 | 阿里 Qwen | [bailian.console.aliyun.com](https://bailian.console.aliyun.com) | 中国 |
 | 智谱 GLM | [open.bigmodel.cn](https://open.bigmodel.cn) | 中国 |
-| OpenAI | [platform.openai.com](https://platform.openai.com) | 默认走 `gpt-4o-mini` |
+| OpenAI | [platform.openai.com](https://platform.openai.com) | 默认走 `gpt-5.4-mini` |
 | Groq | [console.groq.com](https://console.groq.com) | 免费档位够用,推理极快 |
 | Ollama | 本地部署 | JSON mode 部分兼容,慎用 |
 

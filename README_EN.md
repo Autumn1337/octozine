@@ -51,7 +51,7 @@ Every fork's output is different — the LLM infers your taste from your starred
 | Moonshot (Kimi) | [platform.moonshot.cn](https://platform.moonshot.cn) | China |
 | Alibaba Qwen | [bailian.console.aliyun.com](https://bailian.console.aliyun.com) | China |
 | Zhipu GLM | [open.bigmodel.cn](https://open.bigmodel.cn) | China |
-| OpenAI | [platform.openai.com](https://platform.openai.com) | Defaults to `gpt-4o-mini` |
+| OpenAI | [platform.openai.com](https://platform.openai.com) | Defaults to `gpt-5.4-mini` |
 | Groq | [console.groq.com](https://console.groq.com) | Free tier is enough; very fast |
 | Ollama | self-hosted | JSON mode partial — use with care |
 
