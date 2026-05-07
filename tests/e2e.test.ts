@@ -177,4 +177,51 @@ describe("runPipeline E2E", () => {
     expect(issue.meta.sourceCounts.trending ?? 0).toBeGreaterThan(0);
     expect(issue.meta.sourceCounts.search ?? 0).toBeGreaterThan(0);
   });
+
+  it("auto-generates profile.yaml when regenerate is true and flips it back", async () => {
+    await mkdir(path.join(tmpRoot, "config"), { recursive: true });
+    await mkdir(path.join(tmpRoot, "data/issues"), { recursive: true });
+    const cfg = cfgYaml.replace("regenerate: false", "regenerate: true");
+    const fs = await import("node:fs/promises");
+    await fs.writeFile(path.join(tmpRoot, "config/config.yaml"), cfg);
+    // Pre-write a profile.yaml so ensureProfile sees regenerate=true and overwrites it.
+    await fs.writeFile(path.join(tmpRoot, "config/profile.yaml"), profileYaml);
+
+    const generatedProfile = JSON.stringify({
+      themes: ["LLM tooling and inference"],
+      languages: ["rust"],
+      exclude_themes: [],
+      notes: "Auto-generated test profile.",
+    });
+
+    let llmCalls = 0;
+    const fetchMock = vi.fn(async (url: string | URL): Promise<Response> => {
+      const u = String(url);
+      if (u.includes("api.github.com/users/") && u.includes("/starred")) {
+        return new Response(JSON.stringify([
+          { full_name: "rust-lang/rust", description: "x", topics: ["rust"], language: "Rust" },
+          { full_name: "tokio-rs/tokio", description: "y", topics: ["async"], language: "Rust" },
+        ]));
+      }
+      if (u.includes("github.com/trending")) return new Response(trendingHtml);
+      if (u.endsWith("/chat/completions")) {
+        const idx = llmCalls++;
+        const content = idx === 0 ? generatedProfile : (idx === 1 ? rankFixture : summaryFixture);
+        return new Response(JSON.stringify({ choices: [{ message: { content } }] }));
+      }
+      throw new Error(`unexpected fetch ${u}`);
+    });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    process.env.LLM_API_KEY = "sk-test";
+    await runPipeline({ root: tmpRoot, now: new Date("2026-05-04T00:00:00Z") });
+
+    const profileText = await readFile(path.join(tmpRoot, "config/profile.yaml"), "utf8");
+    expect(profileText).toContain("# generated 2026-05-04 from alice");
+    expect(profileText).toContain("LLM tooling and inference");
+
+    const cfgAfter = await readFile(path.join(tmpRoot, "config/config.yaml"), "utf8");
+    expect(cfgAfter).toContain("regenerate: false");
+    expect(cfgAfter).not.toContain("regenerate: true");
+  });
 });

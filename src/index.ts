@@ -1,12 +1,13 @@
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import * as path from "node:path";
-import { parseConfig, parseProfile } from "./config.js";
+import { parseConfig } from "./config.js";
 import { fetchTrending } from "./fetchers/trending.js";
 import { fetchSearch } from "./fetchers/search.js";
 import { fetchHn } from "./fetchers/hn.js";
 import { fetchEvents } from "./fetchers/events.js";
 import { dedupCandidates } from "./pipeline/dedup.js";
 import { filterByHistory, updateSeen, type SeenMap } from "./pipeline/history.js";
+import { ensureProfile } from "./pipeline/profile.js";
 import { rankCandidates } from "./pipeline/rank.js";
 import { summarizeAll } from "./pipeline/summarize.js";
 import { buildIssue } from "./render/build-issue.js";
@@ -25,13 +26,21 @@ export async function runPipeline(opts: RunOpts = {}): Promise<IssueData> {
   const now = opts.now ?? new Date();
 
   const cfgText = await readFile(path.join(root, "config/config.yaml"), "utf8");
-  const profText = await readFile(path.join(root, "config/profile.yaml"), "utf8");
   const config = parseConfig(cfgText);
-  const profile = parseProfile(profText);
 
   const apiKey = process.env.LLM_API_KEY;
   if (!apiKey) throw new Error("LLM_API_KEY env var is required");
   const ghToken = process.env.GH_TOKEN;
+
+  // 0. ensure profile (auto-generate on first run or when regenerate flag is set)
+  const profile = await ensureProfile({
+    root,
+    username: config.githubUsername,
+    regenerate: config.profile.regenerate,
+    llm: { baseUrl: config.llm.baseUrl, apiKey, model: config.llm.model },
+    ...(ghToken ? { ghToken } : {}),
+    now,
+  });
 
   // 1. fetch — parallel, partial failure tolerant
   const enabled: FetcherEntry[] = [];
