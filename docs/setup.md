@@ -75,6 +75,18 @@ After ~3 minutes:
 
 From then on, the workflow runs on the schedule you set.
 
+## Optional: `GH_TOKEN` secret
+
+The `hn` and `events` sources call the GitHub REST API. Without auth you have a 60 req/h budget per IP; with a token, 5000 req/h.
+
+1. Create a fine-grained PAT at https://github.com/settings/tokens
+   - For `hn` enrichment: no scopes needed (`public_repo` read is automatic).
+   - For `events`: also grant `read:user` (lets the workflow read your `following` list).
+2. Add a repo secret named `GH_TOKEN` with the token value.
+3. The workflow already passes it through; nothing else to change.
+
+If you don't enable `events` and don't hit rate limits on `hn`, you can skip this entirely.
+
 ## Troubleshooting
 
 - **Workflow fails immediately with "LLM_API_KEY not set"** — Step 2 not done.

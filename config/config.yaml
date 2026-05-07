@@ -23,7 +23,19 @@ sources:
     enabled: true
     langs: [rust, python, typescript, go]
     window: weekly
-  # search / hn / events come in M4
+  search:
+    enabled: true
+    queries:
+      # `{-Nd}` is substituted with `today - N days` (ISO date)
+      - "topic:llm stars:>100 created:>{-30d}"
+      - "topic:cli language:rust pushed:>{-7d}"
+  hn:
+    enabled: true
+    min_score: 100
+  events:
+    # Tracks repos starred by accounts you follow on GitHub.
+    # Requires a GH_TOKEN secret (see docs/setup.md).
+    enabled: false
 
 outputs:
   pages: { enabled: true }
