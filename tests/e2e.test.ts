@@ -178,6 +178,52 @@ describe("runPipeline E2E", () => {
     expect(issue.meta.sourceCounts.search ?? 0).toBeGreaterThan(0);
   });
 
+  it("first-fork path: profile.yaml absent → auto-generate, do NOT flip regenerate flag", async () => {
+    await mkdir(path.join(tmpRoot, "config"), { recursive: true });
+    await mkdir(path.join(tmpRoot, "data/issues"), { recursive: true });
+    // Default fork shape: regenerate stays false, profile.yaml does not exist
+    const fs = await import("node:fs/promises");
+    await fs.writeFile(path.join(tmpRoot, "config/config.yaml"), cfgYaml);
+    // Note: NO profile.yaml is written
+
+    const generatedProfile = JSON.stringify({
+      themes: ["LLM tooling and inference"],
+      languages: ["rust"],
+      exclude_themes: [],
+      notes: "Auto-generated from starred.",
+    });
+
+    let llmCalls = 0;
+    const fetchMock = vi.fn(async (url: string | URL): Promise<Response> => {
+      const u = String(url);
+      if (u.includes("api.github.com/users/") && u.includes("/starred")) {
+        return new Response(JSON.stringify([
+          { full_name: "rust-lang/rust", description: "x", topics: ["rust"], language: "Rust" },
+        ]));
+      }
+      if (u.includes("github.com/trending")) return new Response(trendingHtml);
+      if (u.endsWith("/chat/completions")) {
+        const idx = llmCalls++;
+        const content = idx === 0 ? generatedProfile : (idx === 1 ? rankFixture : summaryFixture);
+        return new Response(JSON.stringify({ choices: [{ message: { content } }] }));
+      }
+      throw new Error(`unexpected fetch ${u}`);
+    });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    process.env.LLM_API_KEY = "sk-test";
+    await runPipeline({ root: tmpRoot, now: new Date("2026-05-04T00:00:00Z") });
+
+    // profile.yaml should have been auto-written
+    const profileText = await readFile(path.join(tmpRoot, "config/profile.yaml"), "utf8");
+    expect(profileText).toContain("# generated 2026-05-04 from alice");
+    expect(profileText).toContain("LLM tooling and inference");
+
+    // config.yaml should NOT have been modified — regenerate was already false
+    const cfgAfter = await readFile(path.join(tmpRoot, "config/config.yaml"), "utf8");
+    expect(cfgAfter).toBe(cfgYaml);
+  });
+
   it("auto-generates profile.yaml when regenerate is true and flips it back", async () => {
     await mkdir(path.join(tmpRoot, "config"), { recursive: true });
     await mkdir(path.join(tmpRoot, "data/issues"), { recursive: true });

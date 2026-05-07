@@ -65,7 +65,7 @@ Cost: ~6 LLM calls per issue (1 rank + 5 summarize, plus 1 profile gen on first 
 
 → [github.com/Autumn1337/octozine/fork](https://github.com/Autumn1337/octozine/fork)
 
-### Step 2 · Edit 3 lines in `config/config.yaml` of your fork
+### Step 2 · Edit 2 lines in `config/config.yaml` of your fork
 
 ```yaml
 github_username: <your GitHub username>     # ← change this. First run pulls your starred to infer your taste
@@ -73,12 +73,11 @@ github_username: <your GitHub username>     # ← change this. First run pulls y
 llm:
   provider: deepseek                        # ← whichever provider you got a key for (table above)
   # model: deepseek-v4-pro                  # ← optional. Leave commented to use the provider's default
-
-profile:
-  regenerate: true                          # ← set true on first run; LLM will rebuild profile from your starred and flip this back automatically
 ```
 
 Leave everything else alone. Commit to your fork's main.
+
+> ℹ️ Forks do **not** ship a `config/profile.yaml` (only a `.example`). On first run, octozine generates one from your starred repos and commits it back — you don't need to touch this file manually.
 
 ### Step 3 · Add the LLM key as a repo secret
 
@@ -110,7 +109,7 @@ After that, the workflow runs every Monday 09:00 UTC. To change frequency/timezo
 
 ## After the first run: your interest profile
 
-The first run uses an LLM to read your last 100 starred repos and produce `config/profile.yaml`, looking like:
+The first run uses an LLM to read your last 100 starred repos, write `config/profile.yaml`, and commit it back to your main branch. It looks like:
 
 ```yaml
 # generated 2026-05-07 from yourname's starred repos
