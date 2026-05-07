@@ -138,7 +138,7 @@ https://yourname.github.io/octozine/
 
 ## 它生成什么
 
-每期默认精选 5 个项目:
+每期从 ~150 个候选(Trending / Search / HN)里精选 **默认 5 个**项目(可在 `config/config.yaml` 改 `top_n`,例如 `top_n: 10` 看更多)。每个项目带:
 
 - 中英双语摘要
 - 中文“为什么推它”

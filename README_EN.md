@@ -138,7 +138,7 @@ After that, it runs every Monday at 09:00 UTC. Change the schedule in [docs/setu
 
 ## What It Publishes
 
-Each issue picks 5 projects by default:
+Each issue picks **5 projects by default** out of ~150 candidates (Trending / Search / HN) — bump it via `top_n` in `config/config.yaml` (e.g. `top_n: 10` to see more). Each pick comes with:
 
 - bilingual zh/en summaries
 - a Chinese “why this one” reason
